@@ -12,10 +12,25 @@ import remarkGfm from "remark-gfm";
 import Message from "../../../components/message"
 import Util from "../../../lib/util";
 
-const Page: NextPage = () => {
+export function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: true,
+  }
+}
+
+export function getStaticProps({params}: any) {
+  return {
+    props: {
+      docId: params.docId
+    },
+    revalidate: 60
+  }
+}
+
+const Page: NextPage = ({docId}: any) => {
   const router = useRouter()
   const [message, setMessage] = useState<string | null>(null)
-  const {docId} = router.query
   const [doc, setDoc] = useState<Doc>({
     id: '',
     folder_id: '',
@@ -40,19 +55,21 @@ const Page: NextPage = () => {
   }
 
   const readDoc = async () => {
-    if (typeof docId == 'string') {
-      axios.get('/api/doc?id=' + docId).then((res) => {
-        if (!res.data) { return }
-        setDoc(res.data)
-        readLevels(res.data.folder_id)
-      }).catch(err => {
-        if (err.response.status == 403) {
-          router.replace('/login').catch(e => console.log(e))
-        } else {
-          setMessage(err.response.data)
-        }
-      })
+    if (typeof docId !== 'string') {
+      return
     }
+
+    axios.get('/api/doc?id=' + docId).then((res) => {
+      if (!res.data) { return }
+      setDoc(res.data)
+      readLevels(res.data.folder_id)
+    }).catch(err => {
+      if (err.response.status == 403) {
+        router.replace('/login').catch(e => console.log(e))
+      } else {
+        setMessage(err.response.data)
+      }
+    })
   }
 
   useEffect(() => {

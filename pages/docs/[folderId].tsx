@@ -10,21 +10,25 @@ import Nav from "../../layouts/nav"
 import Message from "../../components/message"
 import Footer from "../../layouts/footer"
 
-const Page: NextPage = () => {
-  const router = useRouter()
-  const {folderId} = router.query
-
-  let initialFolderId: string = '00000'
-  if (folderId !== undefined) {
-    if (Array.isArray(folderId)) {
-      // @ts-ignore
-      initialFolderId = folderId.pop().toString()
-    } else {
-      initialFolderId = folderId
-    }
+export function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: true,
   }
+}
 
-  const [currentFolderId, setFolderId] = useState<string>(initialFolderId)
+export function getStaticProps({params}: any) {
+  return {
+    props: {
+      folderId: params.folderId
+    },
+    revalidate: 60
+  }
+}
+
+const Page: NextPage = ({folderId}: any) => {
+  const router = useRouter()
+
   const [folders, setFolders] = useState<Folder[]>([])
   const [docs, setDocs] = useState<Doc[]>([])
   const [levels, setLevels] = useState<Folder[]>([])
@@ -47,9 +51,10 @@ const Page: NextPage = () => {
   }
 
   const readAll = async () => {
-    await readLevels(currentFolderId)
-    await readFolder(currentFolderId)
-    await readDoc(currentFolderId)
+    if (typeof folderId !== 'string') { return }
+    await readLevels(folderId)
+    await readFolder(folderId)
+    await readDoc(folderId)
   }
 
   useEffect(() => {
@@ -60,7 +65,7 @@ const Page: NextPage = () => {
         setMessage(err.response.data)
       }
     })
-  }, [currentFolderId])
+  }, [folderId])
 
   const levelElems = levels.map((folder, index) => {
     if ((levels.length - 1) == index) {
@@ -71,7 +76,7 @@ const Page: NextPage = () => {
       return (
         <li key={index}>
           <Link href={`/docs/${folder.id}`}>
-            <a onClick={e => setFolderId(folder.id)}>{ folder.folder_name }</a>
+            <a>{ folder.folder_name }</a>
           </Link>
           <span>&gt;</span>
         </li>
@@ -83,7 +88,7 @@ const Page: NextPage = () => {
     return (
       <li key={index} className="bg-blue-700 text-white">
         <Link href={`/docs/${folder.id}`}>
-          <a className="flex" onClick={e => setFolderId(folder.id)}>
+          <a className="flex">
             <span className="material-icons mr-1">folder</span>
             <span>{folder.folder_name}</span>
           </a>
@@ -121,7 +126,7 @@ const Page: NextPage = () => {
         <ul className="levels">
           <li>
             <Link href="/docs/00000">
-              <a onClick={e => setFolderId('00000')}>Top</a>
+              <a>Top</a>
             </Link>
             <span>&gt;</span>
           </li>
