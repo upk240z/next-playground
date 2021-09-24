@@ -9,6 +9,7 @@ import {useRouter} from "next/router";
 const Page: NextPage = () => {
   const router = useRouter()
   const [message, setMessage] = useState<string | null>(null)
+  const [msgClass, setClass] = useState<string | null>('danger')
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
@@ -29,9 +30,11 @@ const Page: NextPage = () => {
     const result = await res.json()
 
     if (result.authenticated) {
+      setClass('success')
       setMessage('認証OK')
       router.replace('/docs/00000').catch(e => console.log(e))
     } else {
+      setClass('danger')
       setMessage(result.message)
     }
   }
@@ -42,7 +45,7 @@ const Page: NextPage = () => {
       <Nav/>
       <main>
         <h1>Login</h1>
-        <Message message={message} className="alert-danger"/>
+        <Message message={message} className={`alert-${msgClass}`} />
         <div className="card mt-5">
           <form onSubmit={handleSubmit}>
             <div className="flex">

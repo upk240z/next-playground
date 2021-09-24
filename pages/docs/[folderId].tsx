@@ -99,7 +99,7 @@ const Page: NextPage = () => {
           <a className="flex">
             <span className="material-icons mr-1">description</span>
             <span className="flex-1">{doc.title}</span>
-            <span className="mr-3 px-2 py-1 bg-green-900 rounded-lg text-white text-sm">
+            <span className="mr-3 px-2 py-1 bg-green-900 rounded-lg text-white text-xs">
               {Util.dateFormat('%Y-%m-%d %H:%M:%S', doc.updated_at)}
             </span>
           </a>

@@ -98,7 +98,12 @@ const Page: NextPage = () => {
           </div>
         </div>
 
-        <div className="mt-1 text-right text-gray-600">Updated: { Util.dateFormat('%Y-%m-%d %H:%M:%S', doc.updated_at) }</div>
+        {
+          doc.updated_at ?
+            <div className="mt-1 text-right text-gray-600">
+              Updated: { Util.dateFormat('%Y-%m-%d %H:%M:%S', doc.updated_at) }
+            </div> : <></>
+        }
 
       </main>
 
