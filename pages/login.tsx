@@ -40,7 +40,7 @@ const Page: NextPage = () => {
   }
 
   return (
-    <div className="container mx-auto">
+    <div className="container">
       <Head><title>Login</title></Head>
       <Nav/>
       <main>

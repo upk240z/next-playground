@@ -65,7 +65,7 @@ export default class Page extends React.Component<any, any> {
     })
 
     return (
-      <div className="container mx-auto">
+      <div className="container">
         <Head><title>Form(Class base)</title></Head>
         <Nav/>
         <main>

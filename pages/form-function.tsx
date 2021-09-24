@@ -52,7 +52,7 @@ const Page: NextPage = () => {
   })
 
   return (
-    <div className="container mx-auto">
+    <div className="container">
       <Head><title>Form(Function base)</title></Head>
       <Nav/>
       <main>

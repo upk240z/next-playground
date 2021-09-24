@@ -12,7 +12,7 @@ const Home: NextPage = () => {
         <title>Top page</title>
       </Head>
 
-      <div className="container mx-auto">
+      <div className="container">
         <Nav/>
 
         <main>
