@@ -1,0 +1,161 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+h1 {
+  @apply text-3xl py-3 border-b border-gray-400;
+}
+
+input[type=text], input[type=date], input[type=password], select {
+  @apply rounded w-full;
+}
+
+.btn-primary {
+  @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none;
+}
+
+.alert-success {
+  @apply flex items-center bg-green-500 text-white text-sm font-bold px-4 py-3;
+}
+
+.alert-danger {
+  @apply flex items-center bg-red-500 text-white text-sm font-bold px-4 py-3;
+}
+
+footer {
+  @apply bg-gray-300 mt-5;
+
+  p {
+    @apply p-2 text-center text-base;
+  }
+}
+
+ul.list-group {
+  li {
+    @apply relative -mb-px block pl-4 py-3 border border-gray-400 w-full;
+
+    &:first-child {
+      @apply rounded-t-xl;
+    }
+
+    &:last-child {
+      @apply rounded-b-xl;
+    }
+  }
+}
+
+.card {
+  @apply border p-3 border-gray-400 shadow-lg rounded-lg;
+}
+
+.sidenav {
+  position: fixed;
+  width: 300px;
+  left: 0;
+  top: 0;
+  margin: 0;
+  transform: translateX(-100%);
+  height: 100%;
+  height: calc(100% + 60px);
+  height: -moz-calc(100%);
+  padding-bottom: 60px;
+  background-color: #fff;
+  z-index: 999;
+  overflow-y: auto;
+
+  li {
+    line-height: 48px;
+
+    a {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      height: 48px;
+      line-height: 48px;
+      padding: 0 32px;
+
+      i.material-icons {
+        float: left;
+        height: 48px;
+        line-height: 48px;
+        margin: 0 32px 0 0;
+        width: 24px;
+        color: rgba(0, 0, 0, 0.54);
+      }
+    }
+  }
+
+  .subheader {
+    cursor: initial;
+    pointer-events: none;
+    color: #114d3e;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 48px;
+    background-color: #36d5b4;
+  }
+
+  .divider {
+    margin: 8px 0 0 0;
+    height: 1px;
+    overflow: hidden;
+    background-color: #e0e0e0;
+  }
+}
+
+.sidenav-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  opacity: 1;
+  height: 120vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 997;
+}
+
+.markdown {
+  ol {
+    @apply list-decimal pl-10;
+  }
+
+  ul {
+    @apply list-disc pl-5;
+  }
+
+  h2 {
+    @apply my-3 pl-3 border-red-500 border-l-4 text-xl font-bold;
+  }
+
+  h4 {
+    @apply my-3 pb-2 text-lg border-b border-black border-dotted font-bold;
+  }
+
+  pre {
+    @apply my-2 p-2 border border-black rounded overflow-x-auto text-sm;
+    background-color: #f8f9fa;
+  }
+
+  table {
+    @apply table-auto;
+    th {
+      @apply p-2 border border-gray-600 bg-blue-100 text-center;
+    }
+    td {
+      @apply p-2 border border-gray-600;
+    }
+  }
+}
+
+ul.levels {
+  @apply flex mt-2;
+  li {
+    @apply mr-3 text-blue-700;
+    &:last-child {
+      @apply font-bold;
+    }
+    a {
+      @apply border-b border-blue-700;
+    }
+  }
+}
