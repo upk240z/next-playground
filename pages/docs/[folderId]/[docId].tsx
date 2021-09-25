@@ -28,17 +28,19 @@ export function getStaticProps({params}: any) {
   }
 }
 
+const initialDoc = {
+  id: '',
+  folder_id: '',
+  title: '',
+  body: '',
+  created_at: 0,
+  updated_at: 0
+}
+
 const Page: NextPage = ({docId}: any) => {
   const router = useRouter()
   const [message, setMessage] = useState<string | null>(null)
-  const [doc, setDoc] = useState<Doc>({
-    id: '',
-    folder_id: '',
-    title: '',
-    body: '',
-    created_at: 0,
-    updated_at: 0
-  })
+  const [doc, setDoc] = useState<Doc>(initialDoc)
   const [levels, setLevels] = useState<Folder[]>([])
 
   const readLevels = (folderId: string) => {
@@ -73,6 +75,7 @@ const Page: NextPage = ({docId}: any) => {
   }
 
   useEffect(() => {
+    setDoc(initialDoc)
     readDoc()
       .catch(err => console.log(err))
   }, [docId])
@@ -88,6 +91,32 @@ const Page: NextPage = ({docId}: any) => {
     )
   })
 
+  const docElements = (
+    <div>
+      <ul className="levels">
+        <li>
+          <Link href="/docs/00000"><a>Top</a></Link>
+          <span>&gt;</span>
+        </li>
+        { levelElems }
+      </ul>
+
+      <div className="card mt-5">
+        <h2 className="pb-3 px-2 border-b border-gray-700 text-3xl font-bold">{ doc.title }</h2>
+        <div className="p-2 markdown">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{ doc.body! }</ReactMarkdown>
+        </div>
+      </div>
+
+      {
+        doc.updated_at ?
+          <div className="mt-1 text-right text-gray-600">
+            Updated: { Util.dateFormat('%Y-%m-%d %H:%M:%S', doc.updated_at) }
+          </div> : <></>
+      }
+    </div>
+  )
+
   return (
     <div className="container mx-auto">
       <Head>
@@ -100,27 +129,7 @@ const Page: NextPage = ({docId}: any) => {
 
         <Message message={message} className="alert-danger"/>
 
-        <ul className="levels">
-          <li>
-            <Link href="/docs/00000"><a>Top</a></Link>
-            <span>&gt;</span>
-          </li>
-          { levelElems }
-        </ul>
-
-        <div className="card mt-5">
-          <h2 className="pb-3 px-2 border-b border-gray-700 text-3xl font-bold">{ doc.title }</h2>
-          <div className="p-2 markdown">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{ doc.body! }</ReactMarkdown>
-          </div>
-        </div>
-
-        {
-          doc.updated_at ?
-            <div className="mt-1 text-right text-gray-600">
-              Updated: { Util.dateFormat('%Y-%m-%d %H:%M:%S', doc.updated_at) }
-            </div> : <></>
-        }
+        { doc && doc.id ? docElements : <Message message="Loading..." className="alert-success"/> }
 
       </main>
 

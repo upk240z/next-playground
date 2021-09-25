@@ -58,6 +58,7 @@ const Page: NextPage = ({folderId}: any) => {
   }
 
   useEffect(() => {
+    setDocs([])
     readAll().catch(err => {
       if (err.response.status == 403) {
         router.replace('/login').catch(e => console.log(e))
@@ -113,6 +114,25 @@ const Page: NextPage = ({folderId}: any) => {
     )
   })
 
+  const foldersElement = (
+    <div>
+      <ul className="levels">
+        <li>
+          <Link href="/docs/00000">
+            <a>Top</a>
+          </Link>
+          <span>&gt;</span>
+        </li>
+        { levelElems }
+      </ul>
+
+      <ul className="list-group mt-5">
+        {folderElems}
+        {docElems}
+      </ul>
+    </div>
+  )
+
   return (
     <div className="container mx-auto">
       <Head><title>Documents</title></Head>
@@ -123,20 +143,7 @@ const Page: NextPage = ({folderId}: any) => {
 
         <Message message={message} className="alert-danger"/>
 
-        <ul className="levels">
-          <li>
-            <Link href="/docs/00000">
-              <a>Top</a>
-            </Link>
-            <span>&gt;</span>
-          </li>
-          { levelElems }
-        </ul>
-
-        <ul className="list-group mt-5">
-          {folderElems}
-          {docElems}
-        </ul>
+        { docs && docs.length > 0 ? foldersElement : <Message message="Loading..." className="alert-success"/>  }
       </main>
 
       <Footer/>
