@@ -62,6 +62,7 @@ const Nav = () => {
         </li>
         <li><NavLink href="/form-function">Form(Function component)</NavLink></li>
         <li><NavLink href="/form-class">Form(Class component)</NavLink></li>
+        <li><NavLink href="/posts">Posts</NavLink></li>
       </ul>
       { showOverlay && <div className="sidenav-overlay" onClick={sideMenuOut}/> }
     </div>

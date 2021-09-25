@@ -25,7 +25,7 @@ const Home: NextPage = () => {
           <ul className="list-group mt-5">
             <li><Link href="/form-function"><a>Form(Function component)</a></Link></li>
             <li><Link href="/form-class"><a>Form(Class component)</a></Link></li>
-            <li><Link href="/login"><a>Documents</a></Link></li>
+            <li><Link href="/posts"><a>Posts</a></Link></li>
           </ul>
         </main>
 
