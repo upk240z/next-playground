@@ -33,6 +33,7 @@ const Page: NextPage = ({folderId}: any) => {
   const [docs, setDocs] = useState<Doc[]>([])
   const [levels, setLevels] = useState<Folder[]>([])
   const [message, setMessage] = useState<string|null>(null)
+  const [loaded, setLoaded] = useState<boolean>(false)
 
   const readLevels = async (pFolderId: string): Promise<void> => {
     const res = await axios.get('/api/levels?id=' + pFolderId)
@@ -55,6 +56,7 @@ const Page: NextPage = ({folderId}: any) => {
     await readLevels(folderId)
     await readFolder(folderId)
     await readDoc(folderId)
+    setLoaded(true)
   }
 
   useEffect(() => {
@@ -143,7 +145,7 @@ const Page: NextPage = ({folderId}: any) => {
 
         <Message message={message} className="alert-danger"/>
 
-        { docs && docs.length > 0 ? foldersElement : <Message message="Loading..." className="alert-success"/>  }
+        { loaded ? foldersElement : <Message message="Loading..." className="alert-success"/>  }
       </main>
 
       <Footer/>
