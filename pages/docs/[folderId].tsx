@@ -60,7 +60,7 @@ const Page: NextPage = ({folderId}: any) => {
   }
 
   useEffect(() => {
-    setDocs([])
+    setLoaded(false)
     readAll().catch(err => {
       if (err.response.status == 403) {
         router.replace('/login').catch(e => console.log(e))
