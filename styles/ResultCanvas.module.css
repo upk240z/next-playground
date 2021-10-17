@@ -1,0 +1,5 @@
+pre.result {
+  @apply mt-2 p-3 border border-black border-dotted rounded bg-yellow-50 text-sm;
+  max-height: 300px;
+  overflow: auto;
+}

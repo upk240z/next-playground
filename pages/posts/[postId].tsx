@@ -26,9 +26,13 @@ export function getStaticProps({params}: any) {
 const Page: NextPage = ({postId}: any) => {
   const PostDocument: React.FunctionComponent = ({title, body}: any) => {
     return (
-      <div>
-        <h4 className="py-3 border-b border-dotted border-black font-bold">{ title }</h4>
-        <div className="card mt-3">{ body }</div>
+      <div className="card mt-3">
+        <div className="card-title">
+          <h4 className="font-bold">{ title }</h4>
+        </div>
+        <div className="card-body">
+          { body }
+        </div>
       </div>
     )
   }

@@ -20,13 +20,19 @@ const Home: NextPage = () => {
             <a href="https://nextjs.org">Next.js</a> Samples
           </h1>
 
-          <h2 className="pb-2 border-b border-black font-bold">Menu</h2>
-
+          <h2 className="pb-2 border-b border-black font-bold">Examples</h2>
           <ul className="list-group mt-5">
             <li><Link href="/form-function"><a>Form(Function component)</a></Link></li>
             <li><Link href="/form-class"><a>Form(Class component)</a></Link></li>
             <li><Link href="/posts"><a>Posts</a></Link></li>
           </ul>
+
+          <h2 className="mt-3 pb-2 border-b border-black font-bold">Tools</h2>
+          <ul className="list-group mt-5">
+            <li><Link href="/tools/json"><a>JSON</a></Link></li>
+            <li><Link href="/tools/yaml"><a>YAML</a></Link></li>
+          </ul>
+
         </main>
 
         <Footer/>

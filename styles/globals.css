@@ -10,8 +10,12 @@ h1 {
   @apply text-3xl py-3 border-b border-gray-400;
 }
 
-input[type=text], input[type=date], input[type=password], select {
+input[type=text], input[type=date], input[type=password], select, textarea {
   @apply rounded w-full;
+}
+
+label {
+  @apply font-bold;
 }
 
 .btn-primary {
@@ -49,7 +53,13 @@ ul.list-group {
 }
 
 .card {
-  @apply border p-3 border-gray-400 shadow-lg rounded-lg;
+  @apply border border-gray-400 rounded-lg;
+  .card-title {
+    @apply p-3 border-b border-gray-200 rounded-t-lg bg-green-100;
+  }
+  .card-body {
+    @apply p-3;
+  }
 }
 
 .sidenav {
@@ -97,6 +107,7 @@ ul.list-group {
     font-weight: bold;
     line-height: 48px;
     background-color: #36d5b4;
+    text-align: center;
   }
 
   .divider {
@@ -162,4 +173,8 @@ ul.levels {
       @apply border-b border-blue-700;
     }
   }
+}
+
+#copy-board {
+  display: none;
 }

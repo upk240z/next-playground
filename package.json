@@ -23,7 +23,8 @@
     "strftime": "^0.10.0",
     "strtotime": "^1.0.0",
     "swr": "^1.0.1",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "yaml": "^1.10.2"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.3.3",

@@ -72,4 +72,13 @@ export default class Util {
     }
     return strftime(format, new Date(time * 1000));
   }
+
+  public static copyClip(text: string): void {
+    const element = document.getElementById('copy-board') as HTMLTextAreaElement;
+    element.value = text;
+    element.style.display = 'block';
+    element.select();
+    document.execCommand('copy');
+    element.style.display = 'none';
+  }
 }
