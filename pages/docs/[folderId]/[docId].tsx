@@ -102,8 +102,10 @@ const Page: NextPage = ({docId}: any) => {
       </ul>
 
       <div className="card mt-5">
-        <h2 className="pb-3 px-2 border-b border-gray-700 text-3xl font-bold">{ doc.title }</h2>
-        <div className="p-2 markdown">
+        <div className="card-title">
+          <h2 className="text-3xl font-bold">{ doc.title }</h2>
+        </div>
+        <div className="card-body markdown">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{ doc.body! }</ReactMarkdown>
         </div>
       </div>
