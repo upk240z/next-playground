@@ -31,6 +31,7 @@ const Home: NextPage = () => {
           <ul className="list-group mt-5">
             <li><Link href="/tools/json"><a>JSON</a></Link></li>
             <li><Link href="/tools/yaml"><a>YAML</a></Link></li>
+            <li><Link href="/tools/datetime"><a>Datetime</a></Link></li>
           </ul>
 
         </main>

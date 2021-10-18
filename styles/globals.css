@@ -10,7 +10,7 @@ h1 {
   @apply text-3xl py-3 border-b border-gray-400;
 }
 
-input[type=text], input[type=date], input[type=password], select, textarea {
+input[type=text], input[type=date], input[type=password], input[type=number], select, textarea {
   @apply rounded w-full;
 }
 

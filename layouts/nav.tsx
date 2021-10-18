@@ -64,6 +64,7 @@ const Nav = () => {
         <li><div className="subheader">Tools</div></li>
         <li><NavLink href="/tools/json">JSON</NavLink></li>
         <li><NavLink href="/tools/yaml">YAML</NavLink></li>
+        <li><NavLink href="/tools/datetime">Datetime</NavLink></li>
       </ul>
       { showOverlay && <div className="sidenav-overlay" onClick={sideMenuOut}/> }
     </div>
