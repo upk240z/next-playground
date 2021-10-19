@@ -35,7 +35,7 @@ const SampleForm = ({handle}: any) => {
         </div>
       </div>
       <div className="p-3">
-        <button className="btn-primary">Submit</button>
+        <button className="btn-primary w-full">Submit</button>
       </div>
     </form>
   )

@@ -32,6 +32,8 @@ const Home: NextPage = () => {
             <li><Link href="/tools/json"><a>JSON</a></Link></li>
             <li><Link href="/tools/yaml"><a>YAML</a></Link></li>
             <li><Link href="/tools/datetime"><a>Datetime</a></Link></li>
+            <li><Link href="/tools/regex"><a>RegEx</a></Link></li>
+            <li><Link href="/tools/holidays"><a>Holidays</a></Link></li>
           </ul>
 
         </main>

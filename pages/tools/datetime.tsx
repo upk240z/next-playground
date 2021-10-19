@@ -4,6 +4,7 @@ import Util from "../../lib/util";
 import Head from "next/head";
 import Nav from "../../layouts/nav";
 import Message from "../../components/message";
+import Footer from "../../layouts/footer";
 const strtotime = require('strtotime');
 
 const Page: NextPage = () => {
@@ -62,23 +63,32 @@ const Page: NextPage = () => {
       <Message message={message} className={msgClass}/>
 
       <main>
-        <div className="grid grid-cols-1 md:grid-cols-2">
-          <div className="p-3">
-            <label>
-              <span className="text-gray-700">Timestamp</span>
-              <input type="number" className="mt-1" onChange={handleTimestamp}
-                     name="timestamp" required={true} ref={timestampRef}/>
-            </label>
-          </div>
-          <div className="p-3">
-            <label>
-              <span className="text-gray-700">Date</span>
-              <input type="text" className="mt-1" onChange={handleDate}
-                     name="date" required={true} ref={dateRef}/>
-            </label>
+
+        <div className="card mt-5">
+          <div className="card-body">
+            <div className="p-2 grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="">
+                <label>
+                  <span className="text-gray-700">Timestamp</span>
+                  <input type="number" className="mt-1" onChange={handleTimestamp}
+                         name="timestamp" required={true} ref={timestampRef}/>
+                </label>
+              </div>
+
+              <div className="">
+                <label>
+                  <span className="text-gray-700">Date</span>
+                  <input type="text" className="mt-1" onChange={handleDate}
+                         name="date" required={true} ref={dateRef}/>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
+
       </main>
+
+      <Footer/>
     </div>
   )
 }

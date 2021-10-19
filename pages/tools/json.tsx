@@ -40,7 +40,6 @@ const Page: NextPage = () => {
       setMsgClass('alert-success')
       setMessage('success')
     } catch (e: any) {
-      console.log(e)
       setMsgClass('alert-danger')
       setMessage(e.toString())
     }
@@ -63,7 +62,7 @@ const Page: NextPage = () => {
             <div className="card-body">
               <textarea name="json" className="text-sm"></textarea>
               <div className="mt-1">
-                <button className="btn-primary">Parse</button>
+                <button className="btn-primary w-full">Parse</button>
               </div>
             </div>
 
