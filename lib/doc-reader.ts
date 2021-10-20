@@ -1,6 +1,7 @@
 import admin from 'firebase-admin'
 import {ServiceAccount} from "firebase-admin/lib/credential";
-import {DocumentData, QueryDocumentSnapshot} from "@google-cloud/firestore";
+import {DocumentData, FieldValue, QueryDocumentSnapshot, WriteResult} from "@google-cloud/firestore";
+import {sprintf} from "sprintf";
 
 export type Folder = {
   id: string,
@@ -80,6 +81,41 @@ export default class DocReader {
     } else {
       return false;
     }
+  }
+
+  private async createId(): Promise<string> {
+    const snapshot = await this.db.collection('memo').orderBy('id', 'desc').limit(1).get()
+    let id = 0
+    if (!snapshot.empty) {
+      snapshot.forEach((doc: DocumentData) => {
+        id = parseInt(doc.id)
+      })
+    }
+    return sprintf('%05d', id + 1)
+  }
+
+  public async addDoc(folderId: string, title: string, body: string): Promise<void> {
+    const id = await this.createId()
+    const res: WriteResult = await this.db.collection('memo').doc(id).set({
+      id: id,
+      folder_id: folderId,
+      title: title,
+      body: body,
+      created_at: FieldValue.serverTimestamp(),
+      updated_at: FieldValue.serverTimestamp(),
+    })
+  }
+
+  public async updateDoc(docId: string, title: string, body: string): Promise<void> {
+    const res: WriteResult = await this.db.collection('memo').doc(docId).update({
+      title: title,
+      body: body,
+      updated_at: FieldValue.serverTimestamp()
+    })
+  }
+
+  public async deleteDoc(docId: string): Promise<void> {
+    const res: WriteResult = await this.db.collection('memo').doc(docId).delete()
   }
 
   public async getFolder(folderId: string): Promise<Folder|false> {

@@ -178,3 +178,25 @@ ul.levels {
 #copy-board {
   display: none;
 }
+
+div.fixed-action-btn {
+  position: fixed;
+  right: 23px;
+  bottom: 23px;
+  padding-top: 15px;
+  margin-bottom: 0;
+  z-index: 999;
+  .btn-floating {
+    display: inline-block;
+    width: 56px;
+    height: 56px;
+    vertical-align: middle;
+    color: white;
+    padding-top: 15px;
+    border-radius: 50%;
+    text-align: center;
+    &:hover {
+      color: white;
+    }
+  }
+}

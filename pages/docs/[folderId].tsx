@@ -149,6 +149,15 @@ const Page: NextPage = ({folderId}: any) => {
       </main>
 
       <Footer/>
+
+      <div className="fixed-action-btn grid grid-cols-1 gap-2">
+        <Link href={`/docs/` + folderId + '/new'}>
+          <a className="btn-floating bg-green-800">
+            <i className="material-icons left">add</i>
+          </a>
+        </Link>
+      </div>
+
     </div>
   )
 }

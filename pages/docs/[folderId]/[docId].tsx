@@ -5,8 +5,8 @@ import Footer from "../../../layouts/footer"
 import Nav from "../../../layouts/nav"
 import {useRouter} from "next/router"
 import {Doc, Folder} from "../../../lib/doc-reader";
-import axios from "axios";
-import React, {useEffect, useState} from "react";
+import axios, {AxiosResponse} from "axios";
+import React, {useEffect, useRef, useState} from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Message from "../../../components/message"
@@ -42,6 +42,9 @@ const Page: NextPage = ({docId}: any) => {
   const [message, setMessage] = useState<string | null>(null)
   const [doc, setDoc] = useState<Doc>(initialDoc)
   const [levels, setLevels] = useState<Folder[]>([])
+  const [mode, setMode] = useState<string>('read')
+  const titleRef = useRef(null)
+  const bodyRef = useRef(null)
 
   const readLevels = (folderId: string) => {
     axios.get('/api/levels?id=' + folderId).then((res) => {
@@ -91,7 +94,87 @@ const Page: NextPage = ({docId}: any) => {
     )
   })
 
-  const docElements = (
+  const handleClickEdit = (event: any) => {
+    event.preventDefault()
+    setMode('edit')
+    if (!titleRef.current || !bodyRef.current) { return }
+    (titleRef.current as HTMLInputElement).value = doc.title;
+    (bodyRef.current as HTMLTextAreaElement).value = doc.body!;
+  }
+
+  const handleClickBack = (event: any) => {
+    event.preventDefault()
+    setMode('read')
+  }
+
+  const handleSubmit = async (event: any) => {
+    event.preventDefault()
+    if (!titleRef.current || !bodyRef.current) {
+      setMessage('error')
+      return
+    }
+
+    try {
+      const response = await axios.put('/api/doc', {
+        id: docId,
+        title: (titleRef.current as HTMLInputElement).value,
+        body: (bodyRef.current as HTMLInputElement).value
+      })
+
+      if (!response.data['result']) {
+        setMessage(response.data['message'])
+        return
+      }
+
+      router.replace(`/docs/` + doc.folder_id).catch(e => console.log(e))
+    } catch (e: any) {
+      setMessage(e.toString())
+    }
+  }
+
+  const handleClickDelete = async (event: any) => {
+    event.preventDefault()
+
+    if (!confirm('Are you sure?')) { return }
+
+    try {
+      const response = await axios.delete('/api/doc', {
+        params: { id: docId }
+      })
+
+      if (!response.data['result']) {
+        setMessage(response.data['message'])
+        return
+      }
+
+      router.replace(`/docs/` + doc.folder_id).catch(e => console.log(e))
+    } catch (e: any) {
+      setMessage(e.toString())
+    }
+  }
+
+  const textView = <div className="card mt-5">
+    <div className="card-title">
+      <h2 className="text-3xl font-bold">{ doc.title }</h2>
+    </div>
+    <div className="card-body markdown">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{ doc.body! }</ReactMarkdown>
+    </div>
+  </div>
+
+  const formView =  <div className="card mt-5">
+    <div className="card-body">
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 gap-4">
+          <input ref={titleRef}  name="title" type="text" placeholder="Title" defaultValue={doc.title}/>
+          <textarea ref={bodyRef} name="body" placeholder="Body" rows={10}>{ doc.body }</textarea>
+          <button className="btn-primary w-full">Edit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  const docBody = (
     <div>
       <ul className="levels">
         <li>
@@ -101,14 +184,7 @@ const Page: NextPage = ({docId}: any) => {
         { levelElems }
       </ul>
 
-      <div className="card mt-5">
-        <div className="card-title">
-          <h2 className="text-3xl font-bold">{ doc.title }</h2>
-        </div>
-        <div className="card-body markdown">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{ doc.body! }</ReactMarkdown>
-        </div>
-      </div>
+      { mode == 'read' ? textView : formView }
 
       {
         doc.updated_at ?
@@ -131,11 +207,30 @@ const Page: NextPage = ({docId}: any) => {
 
         <Message message={message} className="alert-danger"/>
 
-        { doc && doc.id ? docElements : <Message message="Loading..." className="alert-success"/> }
+        { doc && doc.id ? docBody : <Message message="Loading..." className="alert-success"/> }
 
       </main>
 
       <Footer/>
+
+      <div className="fixed-action-btn grid grid-cols-1 gap-2">
+        {
+          mode == 'read' ?
+            <>
+              <a href="#" className="btn-floating bg-red-800" onClick={handleClickDelete}>
+                <i className="material-icons left">delete</i>
+              </a>
+              <a href="#" className="btn-floating bg-blue-800" onClick={handleClickEdit}>
+                <i className="material-icons left">edit</i>
+              </a>
+            </> : <>
+              <a href="#" className="btn-floating bg-yellow-800" onClick={handleClickBack}>
+                <i className="material-icons left">replay</i>
+              </a>
+            </>
+        }
+      </div>
+
     </div>
   )
 }
