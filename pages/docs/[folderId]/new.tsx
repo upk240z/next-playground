@@ -1,11 +1,13 @@
 import {NextPage} from "next";
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Head from "next/head";
 import Nav from "../../../layouts/nav";
 import axios from "axios";
 import {useRouter} from "next/router";
 import Footer from "../../../layouts/footer";
 import Message from "../../../components/message";
+import {Folder} from "../../../lib/doc-reader";
+import Link from "next/link";
 
 export function getStaticPaths() {
   return {
@@ -25,8 +27,22 @@ export function getStaticProps({params}: any) {
 const Page: NextPage = ({folderId}: any) => {
   const router = useRouter()
   const [message, setMessage] = useState<string | null>(null)
+  const [levels, setLevels] = useState<Folder[]>([])
   const titleRef = useRef(null)
   const bodyRef = useRef(null)
+
+  useEffect(() => {
+    axios.get('/api/levels?id=' + folderId).then((res) => {
+      if (!res.data) { return }
+      setLevels(res.data)
+    }).catch(err => {
+      if (err.response.status == 403) {
+        router.replace('/login').catch(e => console.log(e))
+      } else {
+        setMessage(err.response.data)
+      }
+    })
+  }, [])
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
@@ -47,6 +63,22 @@ const Page: NextPage = ({folderId}: any) => {
     router.replace(`/docs/` + folderId).catch(e => console.log(e))
   }
 
+  const handleClickBack = (event: any) => {
+    event.preventDefault()
+    router.replace(`/docs/` + folderId).catch(e => console.log(e))
+  }
+
+  const levelElems = levels.map((folder, index) => {
+    return (
+      <li key={index}>
+        <Link href={`/docs/${folder.id}`}>
+          <a>{ folder.folder_name }</a>
+        </Link>
+        { (levels.length - 1) != index ? <span>&gt;</span> : null }
+      </li>
+    )
+  })
+
   return (
     <div className="container mx-auto">
       <Head>
@@ -58,6 +90,14 @@ const Page: NextPage = ({folderId}: any) => {
         <h1>New Document</h1>
 
         <Message message={message} className="alert-danger"/>
+
+        <ul className="levels">
+          <li>
+            <Link href="/docs/00000"><a>Top</a></Link>
+            <span>&gt;</span>
+          </li>
+          { levelElems }
+        </ul>
 
         <div className="card mt-5">
           <div className="card-body">
@@ -73,6 +113,13 @@ const Page: NextPage = ({folderId}: any) => {
       </main>
 
       <Footer/>
+
+      <div className="fixed-action-btn grid grid-cols-1 gap-2">
+        <a href="#" className="btn-floating bg-yellow-500" onClick={handleClickBack}>
+          <i className="material-icons left">reply</i>
+        </a>
+      </div>
+
     </div>
 
   )

@@ -217,15 +217,15 @@ const Page: NextPage = ({docId}: any) => {
         {
           mode == 'read' ?
             <>
-              <a href="#" className="btn-floating bg-red-800" onClick={handleClickDelete}>
+              <a href="#" className="btn-floating bg-red-500" onClick={handleClickDelete}>
                 <i className="material-icons left">delete</i>
               </a>
-              <a href="#" className="btn-floating bg-blue-800" onClick={handleClickEdit}>
+              <a href="#" className="btn-floating bg-blue-500" onClick={handleClickEdit}>
                 <i className="material-icons left">edit</i>
               </a>
             </> : <>
-              <a href="#" className="btn-floating bg-yellow-800" onClick={handleClickBack}>
-                <i className="material-icons left">replay</i>
+              <a href="#" className="btn-floating bg-yellow-500" onClick={handleClickBack}>
+                <i className="material-icons left">reply</i>
               </a>
             </>
         }
