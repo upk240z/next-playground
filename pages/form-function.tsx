@@ -1,8 +1,12 @@
+import React, {useState, useEffect} from "react"
 import {NextPage} from "next"
 import Head from "next/head"
+
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+
 import Footer from "../layouts/footer"
 import Nav from "../layouts/nav"
-import React, {useState, useEffect} from "react"
 import Message from "../components/message"
 import SampleForm from "../components/sample-form"
 
@@ -58,14 +62,17 @@ const Page: NextPage = () => {
       <main>
         <h1>Form(Function base)</h1>
         <Message message={message} className="alert-success"/>
-        <div className="card mt-5">
-          <SampleForm handle={handleSubmit}/>
-          <div className="p-3">
-            <ul className="list-group">
-              {lis}
-            </ul>
-          </div>
-        </div>
+
+        <Card className="mt-5">
+          <CardContent>
+            <SampleForm handle={handleSubmit}/>
+            <div className="mt-5">
+              <ul className="list-group">
+                {lis}
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
       </main>
 
       <Footer/>

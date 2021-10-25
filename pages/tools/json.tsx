@@ -1,9 +1,15 @@
+import React, {useState} from "react";
 import {NextPage} from "next"
 import Head from "next/head";
-import Nav from "../../layouts/nav";
-import React, {useState} from "react";
-import Message from "../../components/message";
+
 import YAML from 'yaml'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+
+import Nav from "../../layouts/nav";
+import Message from "../../components/message";
 import Footer from "../../layouts/footer";
 import ResultCanvas from "../../components/result-canvas";
 
@@ -54,20 +60,22 @@ const Page: NextPage = () => {
 
         <Message message={message} className={msgClass}/>
 
-        <div className="card mt-5">
-          <form onSubmit={handleSubmit}>
-            <div className="card-title">
-              <h4>JSON</h4>
-            </div>
-            <div className="card-body">
-              <textarea name="json" className="text-sm"></textarea>
-              <div className="mt-1">
-                <button className="btn-primary w-full">Parse</button>
+        <form onSubmit={handleSubmit}>
+          <Card className="mt-5">
+            <CardContent>
+              <TextField
+                name="json"
+                label="JSON"
+                multiline
+                rows={4}
+                className="w-full"
+              />
+              <div className="mt-3">
+                <Button type="submit" variant="contained" className="w-full">Parse</Button>
               </div>
-            </div>
-
-          </form>
-        </div>
+            </CardContent>
+          </Card>
+        </form>
 
         <ResultCanvas title="YAML" text={yamlText}/>
         <ResultCanvas title="PHP" text={phpText}/>

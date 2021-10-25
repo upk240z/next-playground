@@ -1,13 +1,19 @@
-import {NextPage} from "next";
 import React, {useEffect, useRef, useState} from "react";
-import Head from "next/head";
-import Nav from "../../../layouts/nav";
-import axios from "axios";
 import {useRouter} from "next/router";
+import {NextPage} from "next";
+import Head from "next/head";
+import Link from "next/link";
+
+import axios from "axios";
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+
+import Nav from "../../../layouts/nav";
 import Footer from "../../../layouts/footer";
 import Message from "../../../components/message";
 import {Folder} from "../../../lib/doc-reader";
-import Link from "next/link";
 
 export function getStaticPaths() {
   return {
@@ -99,17 +105,31 @@ const Page: NextPage = ({folderId}: any) => {
           { levelElems }
         </ul>
 
-        <div className="card mt-5">
-          <div className="card-body">
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 gap-4">
-                <input ref={titleRef}  name="title" type="text" placeholder="Title"/>
-                <textarea ref={bodyRef} name="body" placeholder="Body" rows={10}></textarea>
-                <button className="btn-primary w-full">Add</button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <form onSubmit={handleSubmit}>
+          <Card className="mt-5">
+            <CardContent className="grid grid-cols-1 gap-4">
+              <TextField
+                name="title"
+                label="Title"
+                type="text"
+                required={true}
+                className="w-full"
+                inputRef={titleRef}
+              />
+              <TextField
+                name="body"
+                label="Body"
+                type="text"
+                required={true}
+                className="w-full"
+                multiline
+                rows={10}
+                inputRef={bodyRef}
+              />
+              <Button type="submit" variant="contained" className="w-full">Add</Button>
+            </CardContent>
+          </Card>
+        </form>
       </main>
 
       <Footer/>

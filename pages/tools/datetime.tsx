@@ -1,11 +1,16 @@
-import {NextPage} from "next";
-import React, {useEffect, useRef, useState} from "react";
-import Util from "../../lib/util";
-import Head from "next/head";
-import Nav from "../../layouts/nav";
-import Message from "../../components/message";
-import Footer from "../../layouts/footer";
+import React, {useEffect, useRef, useState} from "react"
+import {NextPage} from "next"
+import Head from "next/head"
+
 const strtotime = require('strtotime');
+import TextField from '@mui/material/TextField'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+
+import Util from "../../lib/util"
+import Nav from "../../layouts/nav"
+import Message from "../../components/message"
+import Footer from "../../layouts/footer"
 
 const Page: NextPage = () => {
   const [message, setMessage] = useState<string | null>(null)
@@ -14,8 +19,10 @@ const Page: NextPage = () => {
   const dateRef = useRef(null)
 
   useEffect(() => {
+    console.log(timestampRef.current)
     if (timestampRef.current) {
       const element = timestampRef.current as HTMLInputElement
+      console.log('@@@@@@@@@@@@ set')
       element.value = Util.now().toString()
     }
     if (dateRef.current) {
@@ -58,34 +65,37 @@ const Page: NextPage = () => {
       <Head><title>Datetime</title></Head>
       <Nav/>
 
-      <h1>Datetime</h1>
-
-      <Message message={message} className={msgClass}/>
-
       <main>
+        <h1>Datetime</h1>
 
-        <div className="card mt-5">
-          <div className="card-body">
+        <Message message={message} className={msgClass}/>
+
+        <Card className="mt-5">
+          <CardContent>
             <div className="p-2 grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div className="">
-                <label>
-                  <span className="text-gray-700">Timestamp</span>
-                  <input type="number" className="mt-1" onChange={handleTimestamp}
-                         name="timestamp" required={true} ref={timestampRef}/>
-                </label>
-              </div>
-
-              <div className="">
-                <label>
-                  <span className="text-gray-700">Date</span>
-                  <input type="text" className="mt-1" onChange={handleDate}
-                         name="date" required={true} ref={dateRef}/>
-                </label>
-              </div>
+              <TextField
+                name="timestamp"
+                label="Timestamp"
+                type="number"
+                required={true}
+                inputRef={timestampRef}
+                onChange={handleTimestamp}
+                defaultValue=""
+                className="w-full"
+              />
+              <TextField
+                name="date"
+                label="Date"
+                type="text"
+                required={true}
+                inputRef={dateRef}
+                onChange={handleDate}
+                defaultValue=""
+                className="w-full"
+              />
             </div>
-          </div>
-        </div>
-
+          </CardContent>
+        </Card>
       </main>
 
       <Footer/>

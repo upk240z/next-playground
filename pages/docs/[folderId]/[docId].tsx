@@ -1,14 +1,21 @@
+import React, {useEffect, useRef, useState} from "react";
+import {useRouter} from "next/router"
 import {NextPage} from "next"
 import Link from "next/link"
 import Head from "next/head"
-import Footer from "../../../layouts/footer"
-import Nav from "../../../layouts/nav"
-import {useRouter} from "next/router"
-import {Doc, Folder} from "../../../lib/doc-reader";
+
 import axios, {AxiosResponse} from "axios";
-import React, {useEffect, useRef, useState} from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import CardContent from '@mui/material/CardContent'
+
+import Footer from "../../../layouts/footer"
+import Nav from "../../../layouts/nav"
+import {Doc, Folder} from "../../../lib/doc-reader";
 import Message from "../../../components/message"
 import Util from "../../../lib/util";
 
@@ -153,26 +160,43 @@ const Page: NextPage = ({docId}: any) => {
     }
   }
 
-  const textView = <div className="card mt-5">
-    <div className="card-title">
-      <h2 className="text-3xl font-bold">{ doc.title }</h2>
-    </div>
-    <div className="card-body markdown">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{ doc.body! }</ReactMarkdown>
-    </div>
-  </div>
+  const textView =
+    <Card className="mt-5">
+      <CardHeader title={doc.title} className="border-b-2 border-gray-500 border-dotted"/>
+      <CardContent className="markdown">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{ doc.body! }</ReactMarkdown>
+      </CardContent>
+    </Card>
 
-  const formView =  <div className="card mt-5">
-    <div className="card-body">
-      <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 gap-4">
-          <input ref={titleRef}  name="title" type="text" placeholder="Title" defaultValue={doc.title}/>
-          <textarea ref={bodyRef} name="body" placeholder="Body" rows={10}>{ doc.body }</textarea>
-          <button className="btn-primary w-full">Edit</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  const formView =
+    <form onSubmit={handleSubmit}>
+      <Card className="mt-5">
+        <CardContent className="grid grid-cols-1 gap-4">
+          <TextField
+            name="title"
+            label="Title"
+            type="text"
+            required={true}
+            defaultValue={doc.title}
+            className="w-full"
+            inputRef={titleRef}
+          />
+          <TextField
+            name="body"
+            label="Body"
+            type="text"
+            required={true}
+            defaultValue={doc.body}
+            className="w-full"
+            multiline
+            rows={10}
+            inputRef={bodyRef}
+          />
+          <Button type="submit" variant="contained" className="w-full">Edit</Button>
+
+        </CardContent>
+      </Card>
+    </form>
 
   const docBody = (
     <div>

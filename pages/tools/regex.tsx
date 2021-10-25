@@ -1,9 +1,15 @@
+import React, {useState} from "react";
 import {NextPage} from "next";
 import Head from "next/head";
+
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+
 import Nav from "../../layouts/nav";
 import Message from "../../components/message";
 import Footer from "../../layouts/footer";
-import React, {useState} from "react";
 
 const Page: NextPage = () => {
   const [message, setMessage] = useState<string | null>(null)
@@ -50,23 +56,31 @@ const Page: NextPage = () => {
 
         <Message message={message} className={msgClass}/>
 
-        <div className="card mt-5">
-          <div className="card-body">
-            <form onSubmit={handleSubmit}>
-              <div>
-                <label htmlFor="regex" className="block mb-2">RegEx</label>
-                <input type="text" name="regex"/>
-              </div>
-              <div className="mt-2">
-                <label htmlFor="target" className="block mb-2">Target</label>
-                <textarea name="target"></textarea>
-              </div>
-              <div className="mt-2">
-                <button className="btn-primary w-full">Check</button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <form onSubmit={handleSubmit}>
+          <Card className="mt-5">
+            <CardContent className="grid grid-cols-1 gap-3">
+              <TextField
+                name="regex"
+                label="RegEx"
+                type="text"
+                required={true}
+                defaultValue=""
+                className="w-full"
+              />
+              <TextField
+                name="target"
+                label="Target"
+                type="text"
+                required={true}
+                defaultValue=""
+                className="w-full"
+                multiline
+                rows={4}
+              />
+              <Button type="submit" variant="contained" className="w-full">Check</Button>
+            </CardContent>
+          </Card>
+        </form>
 
         {
           matchStrings.length > 0 ?

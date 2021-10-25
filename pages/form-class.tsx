@@ -1,9 +1,13 @@
-import Footer from "../layouts/footer"
 import React from "react"
+import Head from "next/head"
+
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+
+import Footer from "../layouts/footer"
 import Nav from "../layouts/nav"
 import Message from "../components/message"
 import SampleForm from "../components/sample-form"
-import Head from "next/head"
 
 export default class Page extends React.Component<any, any> {
   constructor(props: any) {
@@ -71,14 +75,17 @@ export default class Page extends React.Component<any, any> {
         <main>
           <h1>Form(Class base)</h1>
           <Message message={this.state.message} className="alert-success"/>
-          <div className="card mt-5">
-            <SampleForm handle={this.handleSubmit.bind(this)}/>
-            <div className="p-3">
-              <ul className="list-group">
-                {lis}
-              </ul>
-            </div>
-          </div>
+
+          <Card className="mt-5">
+            <CardContent>
+              <SampleForm handle={this.handleSubmit.bind(this)}/>
+              <div className="mt-5">
+                <ul className="list-group">
+                  {lis}
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
         </main>
 
         <Footer/>

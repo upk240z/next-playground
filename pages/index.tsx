@@ -1,9 +1,10 @@
 import type {NextPage} from 'next'
-import styles from '../styles/Home.module.css'
 import Head from "next/head"
+import Link from "next/link"
+
+import styles from '../styles/Home.module.css'
 import Footer from "../layouts/footer"
 import Nav from "../layouts/nav"
-import Link from "next/link"
 
 const Home: NextPage = () => {
   return (
@@ -35,7 +36,6 @@ const Home: NextPage = () => {
             <li><Link href="/tools/regex"><a>RegEx</a></Link></li>
             <li><Link href="/tools/holidays"><a>Holidays</a></Link></li>
           </ul>
-
         </main>
 
         <Footer/>

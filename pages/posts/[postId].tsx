@@ -1,11 +1,16 @@
+import React from "react";
 import type {NextPage} from 'next'
+import Link from "next/link"
 import Head from "next/head"
+import axios from "axios";
+
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import CardContent from '@mui/material/CardContent'
+
 import Footer from "../../layouts/footer"
 import Nav from "../../layouts/nav"
 import withLoading from "../../components/with-loading";
-import axios from "axios";
-import React from "react";
-import Link from "next/link"
 
 export function getStaticPaths() {
   return {
@@ -26,14 +31,12 @@ export function getStaticProps({params}: any) {
 const Page: NextPage = ({postId}: any) => {
   const PostDocument: React.FunctionComponent = ({title, body}: any) => {
     return (
-      <div className="card mt-3">
-        <div className="card-title">
-          <h4 className="font-bold">{ title }</h4>
-        </div>
-        <div className="card-body">
+      <Card className="mt-3">
+        <CardHeader title={title}/>
+        <CardContent>
           { body }
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     )
   }
 
