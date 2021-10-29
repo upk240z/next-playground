@@ -6,6 +6,10 @@ div.container {
   @apply mx-auto px-5;
 }
 
+main {
+  padding-top: 64px;
+}
+
 h1 {
   @apply text-3xl py-3 border-b border-gray-400;
 }

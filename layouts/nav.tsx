@@ -1,6 +1,15 @@
-import Link from "next/link"
-import Util from "../lib/util"
 import {SyntheticEvent, useRef, useState} from "react"
+import Link from "next/link"
+
+import Box from '@mui/material/Box'
+import Toolbar from '@mui/material/Toolbar'
+import AppBar from '@mui/material/AppBar'
+import Typography from '@mui/material/Typography'
+import IconButton from '@mui/material/IconButton'
+import Button from '@mui/material/Button'
+import MenuIcon from '@mui/icons-material/Menu'
+
+import Util from "../lib/util"
 
 const Nav = () => {
   const navRef = useRef(null)
@@ -35,19 +44,26 @@ const Nav = () => {
   }
 
   return (
-    <div>
-      <ul className="flex pl-5 py-2 bg-blue-300">
-        <li>
-          <a id="side-menu-btn" href="#" className="text-white" onClick={handleClickMenu}>
-            <i className="material-icons left">menu</i>
-          </a>
-        </li>
-        <li className="ml-5">
-          <Link href="/">
-            <a className="text-blue-800 hover:text-red-500 font-bold">Next.js</a>
-          </Link>
-        </li>
-      </ul>
+    <>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="fixed">
+          <Toolbar>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+              onClick={handleClickMenu}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              <Link href="/">Next.js</Link>
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      </Box>
 
       <ul className="sidenav" ref={navRef}>
         <li>
@@ -69,7 +85,8 @@ const Nav = () => {
         <li><NavLink href="/tools/holidays">Holidays</NavLink></li>
       </ul>
       { showOverlay && <div className="sidenav-overlay" onClick={sideMenuOut}/> }
-    </div>
+
+    </>
   )
 }
 

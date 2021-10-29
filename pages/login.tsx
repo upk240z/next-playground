@@ -55,24 +55,28 @@ const Page: NextPage = () => {
 
         <form onSubmit={handleSubmit}>
           <Card className="mt-5">
-            <CardContent className="grid grid-cols-1 gap-5 md:grid-cols-3">
-              <TextField
-                name="id"
-                label="ID"
-                type="text"
-                required={true}
-                defaultValue=""
-                className="w-full"
-              />
-              <TextField
-                name="password"
-                label="Password"
-                type="password"
-                required={true}
-                defaultValue=""
-                className="w-full"
-              />
-              <Button type="submit" variant="contained" className="w-full">Login</Button>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                <TextField
+                  name="id"
+                  label="ID"
+                  type="text"
+                  required={true}
+                  defaultValue=""
+                  className="w-full"
+                />
+                <TextField
+                  name="password"
+                  label="Password"
+                  type="password"
+                  required={true}
+                  defaultValue=""
+                  className="w-full"
+                />
+              </div>
+              <div className="mt-5">
+                <Button type="submit" variant="contained" className="w-full">Login</Button>
+              </div>
             </CardContent>
           </Card>
         </form>
