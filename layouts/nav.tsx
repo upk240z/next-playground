@@ -1,4 +1,4 @@
-import {SyntheticEvent, useRef, useState} from "react"
+import React, {useState} from "react"
 import Link from "next/link"
 import {useRouter} from "next/router";
 
@@ -9,36 +9,33 @@ import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
 import Button from '@mui/material/Button';
+import Drawer from '@mui/material/Drawer'
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 
-import Util from "../lib/util"
 import axios from "axios";
 
 const Nav = ({loggedIn}: any) => {
   const router = useRouter()
-  const navRef = useRef(null)
-  const [showOverlay, setShowOverlay] = useState<boolean>(false)
+  const [drawerOpen, setDrawer] = useState<boolean>(false)
 
-  const sideMenuIn = () => {
-    setShowOverlay(true)
-    Util.transform(navRef.current, ['translateX(-100%)', 'translateX(0)']).catch((err) => {
-      console.log(err);
-    })
-  }
+  const toggleDrawer =
+    (open: boolean) =>
+    (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
+      setDrawer(open)
+    }
 
-  const sideMenuOut = () => {
-    Util.transform(navRef.current, ['translateX(0)', 'translateX(-100%)']).then(() => {
-      setShowOverlay(false)
-    }).catch((err) => {
-      console.log(err)
-    })
-  }
-
-  const handleClickMenu = (event: SyntheticEvent) => {
-    event.preventDefault()
-    sideMenuIn()
-  }
-
-  const handleLogout = (event: any) => {
+  const handleLogout = () => {
     axios.delete('/api/login').then((res) => {
       if (!res.data.authenticated) {
         router.replace('/login').catch(e => console.log(e))
@@ -46,14 +43,6 @@ const Nav = ({loggedIn}: any) => {
         console.log('logout failed.')
       }
     })
-  }
-
-  const NavLink = ({href, target, children}: any) => {
-    return (
-      <Link href={href}>
-        <a className="text-blue-700" target={target} onClick={sideMenuOut}>{children}</a>
-      </Link>
-    )
   }
 
   return (
@@ -67,7 +56,7 @@ const Nav = ({loggedIn}: any) => {
               color="inherit"
               aria-label="menu"
               sx={{ mr: 2 }}
-              onClick={handleClickMenu}
+              onClick={toggleDrawer(true)}
             >
               <MenuIcon />
             </IconButton>
@@ -79,26 +68,67 @@ const Nav = ({loggedIn}: any) => {
         </AppBar>
       </Box>
 
-      <ul className="sidenav" ref={navRef}>
-        <li>
-          <Link href="/">
-            <a className="text-blue-800 hover:text-red-500">
-              <i className="material-icons">home</i>TOP
-            </a>
-          </Link>
-        </li>
-        <li><div className="subheader">Examples</div></li>
-        <li><NavLink href="/form-function">Form(Function component)</NavLink></li>
-        <li><NavLink href="/form-class">Form(Class component)</NavLink></li>
-        <li><NavLink href="/posts">Posts</NavLink></li>
-        <li><div className="subheader">Tools</div></li>
-        <li><NavLink href="/tools/json">JSON</NavLink></li>
-        <li><NavLink href="/tools/yaml">YAML</NavLink></li>
-        <li><NavLink href="/tools/datetime">Datetime</NavLink></li>
-        <li><NavLink href="/tools/regex">RegEx</NavLink></li>
-        <li><NavLink href="/tools/holidays">Holidays</NavLink></li>
-      </ul>
-      { showOverlay && <div className="sidenav-overlay" onClick={sideMenuOut}/> }
+      <Drawer
+        open={drawerOpen}
+        onClose={toggleDrawer(false)}
+      >
+        <Box
+          sx={{ width: 300 }}
+          onClick={toggleDrawer(false)}
+          onKeyDown={toggleDrawer(false)}
+        >
+          <List>
+            <ListItem>
+              <ListItemIcon><i className="material-icons">home</i></ListItemIcon>
+              <Link href="/">Top</Link>
+            </ListItem>
+          </List>
+          <Divider/>
+          <List>
+            <ListItem className="text-center">
+              <ListItemText primary="Examples" className="text-center"/>
+            </ListItem>
+            <ListItem>
+              <ListItemIcon><i className="material-icons">info</i></ListItemIcon>
+              <Link href="/form-function">Form(Function component)</Link>
+            </ListItem>
+            <ListItem>
+              <ListItemIcon><i className="material-icons">info</i></ListItemIcon>
+              <Link href="/form-class">Form(Class component)</Link>
+            </ListItem>
+            <ListItem>
+              <ListItemIcon><i className="material-icons">info</i></ListItemIcon>
+              <Link href="/posts">Posts</Link>
+            </ListItem>
+          </List>
+          <Divider/>
+          <List>
+            <ListItem className="text-center">
+              <ListItemText primary="Tools" className="text-center"/>
+            </ListItem>
+            <ListItem>
+              <ListItemIcon><i className="material-icons">build</i></ListItemIcon>
+              <Link href="/tools/json">JSON</Link>
+            </ListItem>
+            <ListItem>
+              <ListItemIcon><i className="material-icons">build</i></ListItemIcon>
+              <Link href="/tools/yaml">YAML</Link>
+            </ListItem>
+            <ListItem>
+              <ListItemIcon><i className="material-icons">build</i></ListItemIcon>
+              <Link href="/tools/datetime">Datetime</Link>
+            </ListItem>
+            <ListItem>
+              <ListItemIcon><i className="material-icons">build</i></ListItemIcon>
+              <Link href="/tools/regex">RegEx</Link>
+            </ListItem>
+            <ListItem>
+              <ListItemIcon><i className="material-icons">build</i></ListItemIcon>
+              <Link href="/tools/holidays">Holidays</Link>
+            </ListItem>
+          </List>
+        </Box>
+      </Drawer>
 
     </>
   )
