@@ -138,7 +138,7 @@ const Page: NextPage = ({folderId}: any) => {
   return (
     <div className="container mx-auto">
       <Head><title>Documents</title></Head>
-      <Nav/>
+      <Nav loggedIn={true}/>
 
       <main>
         <h1>Documents</h1>

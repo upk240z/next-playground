@@ -224,7 +224,8 @@ const Page: NextPage = ({docId}: any) => {
       <Head>
         <title>Document</title>
       </Head>
-      <Nav/>
+
+      <Nav loggedIn={true}/>
 
       <main>
         <h1>Document</h1>

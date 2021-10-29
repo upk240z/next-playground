@@ -90,7 +90,8 @@ const Page: NextPage = ({folderId}: any) => {
       <Head>
         <title>Document</title>
       </Head>
-      <Nav/>
+
+      <Nav loggedIn={true}/>
 
       <main>
         <h1>New Document</h1>

@@ -1,17 +1,20 @@
 import {SyntheticEvent, useRef, useState} from "react"
 import Link from "next/link"
+import {useRouter} from "next/router";
 
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import AppBar from '@mui/material/AppBar'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
-import Button from '@mui/material/Button'
 import MenuIcon from '@mui/icons-material/Menu'
+import Button from '@mui/material/Button';
 
 import Util from "../lib/util"
+import axios from "axios";
 
-const Nav = () => {
+const Nav = ({loggedIn}: any) => {
+  const router = useRouter()
   const navRef = useRef(null)
   const [showOverlay, setShowOverlay] = useState<boolean>(false)
 
@@ -33,6 +36,16 @@ const Nav = () => {
   const handleClickMenu = (event: SyntheticEvent) => {
     event.preventDefault()
     sideMenuIn()
+  }
+
+  const handleLogout = (event: any) => {
+    axios.delete('/api/login').then((res) => {
+      if (!res.data.authenticated) {
+        router.replace('/login').catch(e => console.log(e))
+      } else {
+        console.log('logout failed.')
+      }
+    })
   }
 
   const NavLink = ({href, target, children}: any) => {
@@ -61,6 +74,7 @@ const Nav = () => {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               <Link href="/">Next.js</Link>
             </Typography>
+            { loggedIn ? <Button color="inherit" onClick={handleLogout}>Logout</Button> : null }
           </Toolbar>
         </AppBar>
       </Box>

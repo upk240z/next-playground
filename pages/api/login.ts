@@ -12,6 +12,15 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<LoginResult>
 ) {
+  if (req.method == 'DELETE') {
+    const session = new Session(req, res)
+    session.remove('token')
+    res.status(200).json({
+      authenticated: false,
+    })
+    return
+  }
+
   if (req.method != 'POST') {
     res.status(404).json({
       authenticated: false,

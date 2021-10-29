@@ -43,8 +43,13 @@ export default class Session {
     }
   }
 
-  public set(key: string, value: any): any {
+  public set(key: string, value: any): void {
     this.sessionData[key] = value
+    this.save()
+  }
+
+  public remove(key: string): void {
+    delete this.sessionData[key]
     this.save()
   }
 }
