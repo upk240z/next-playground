@@ -1,20 +1,27 @@
-import React, {useRef} from "react";
+import React, {useRef, useState} from "react";
 
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
+import Snackbar from '@mui/material/Snackbar';
 
 import Util from "../lib/util";
 import styles from '../styles/ResultCanvas.module.css'
 
 const ResultCanvas = ({title, text}: any) => {
+  const [sbOpen, setSnackBar] = useState<boolean>(false)
+  const [sbMsg, setSbMsg] = useState<string>('')
   const preRef = useRef(null)
   const expandRef = useRef(null)
   const shrinkRef = useRef(null)
 
   const handleCopy = () => {
     Util.copyClip(text)
+    setSbMsg('Copied!!')
+    setSnackBar(true)
   }
+
+  const handleSbClose = () => setSnackBar(false)
 
   const handleExpand = () => {
     if (!preRef.current || !expandRef.current || !shrinkRef.current) { return }
@@ -23,15 +30,17 @@ const ResultCanvas = ({title, text}: any) => {
     (shrinkRef.current as HTMLElement).style.display = 'inline';
   }
 
-  const handleShrink = (event: any) => {
+  const handleShrink = () => {
     if (!preRef.current || !expandRef.current || !shrinkRef.current) { return }
     (preRef.current as HTMLElement).style.maxHeight = '300px';
     (expandRef.current as HTMLElement).style.display = 'inline';
     (shrinkRef.current as HTMLElement).style.display = 'none';
   }
 
+  if (text.length == 0) { return null }
+
   return (
-    text.length > 0 ?
+    <>
       <Card className="mt-5">
         <CardHeader
           title={title}
@@ -53,7 +62,15 @@ const ResultCanvas = ({title, text}: any) => {
         <CardContent>
           <pre ref={preRef} className={styles.result}>{text}</pre>
         </CardContent>
-      </Card> : null
+      </Card>
+
+      <Snackbar
+        open={sbOpen}
+        autoHideDuration={3000}
+        message={sbMsg}
+        onClose={handleSbClose}
+      />
+    </>
   )
 }
 

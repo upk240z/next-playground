@@ -1,13 +1,23 @@
+import React, {useEffect, useState} from "react"
 import {NextPage} from "next"
 import Head from "next/head"
+
+import axios from "axios"
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Chip from '@mui/material/Chip';
+import Snackbar from '@mui/material/Snackbar';
+
 import Nav from "../../layouts/nav"
 import Footer from "../../layouts/footer"
-import React, {useEffect, useState} from "react"
-import axios from "axios"
 import Message from "../../components/message"
+import Util from "../../lib/util";
 
 const Page: NextPage = () => {
   const [holidays, setHolidays] = useState([])
+  const [sbOpen, setSnackBar] = useState<boolean>(false)
+  const [sbMsg, setSbMsg] = useState<string>('')
 
   useEffect(() => {
     axios.get('/api/holidays').then((response) => {
@@ -15,11 +25,21 @@ const Page: NextPage = () => {
     })
   }, [])
 
+  const handleClick = (event: any) => {
+    const element = event.target as HTMLElement
+    Util.copyClip(element.innerText)
+    setSbMsg('Copied!!')
+    setSnackBar(true)
+  }
+
+  const handleSbClose = () => setSnackBar(false)
+
   const holidayElements = holidays.map((value: any, index: number) => {
     return (
-      <li key={index}>
-        <span className="px-3 py-1 bg-green-700 rounded-full text-white mr-2">{value['date']}</span>{value['name']}
-      </li>
+      <ListItem key={index}>
+        <Chip label={value['date']} color="warning" className="mr-3" onClick={handleClick}/>
+        <ListItemText primary={value['name']}/>
+      </ListItem>
     )
   })
 
@@ -30,16 +50,24 @@ const Page: NextPage = () => {
       <main>
         <h1>Holidays</h1>
 
-        <ul className="list-group mt-5">
-          {
-            holidayElements.length > 0 ?
-              holidayElements : <Message message="Loading..." className="alert-success"></Message>
-          }
-        </ul>
+        {
+          holidayElements.length > 0 ?
+            <List>
+              { holidayElements }
+            </List> :
+            <Message message="Loading..." className="alert-success"></Message>
+        }
 
       </main>
 
       <Footer/>
+
+      <Snackbar
+        open={sbOpen}
+        autoHideDuration={3000}
+        message={sbMsg}
+        onClose={handleSbClose}
+      />
     </div>
   )
 }
