@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import Util from "../../lib/util"
 import Session from "../../lib/session"
+import Auth from "../../lib/auth";
 
 type LoginResult = {
   authenticated: boolean,
@@ -17,6 +18,14 @@ export default async function handler(
     session.remove('token')
     res.status(200).json({
       authenticated: false,
+    })
+    return
+  }
+
+  if (req.method == 'GET') {
+    const auth = new Auth(req, res)
+    res.status(200).json({
+      authenticated: auth.loggedIn(),
     })
     return
   }

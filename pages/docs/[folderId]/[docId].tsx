@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from "react"
 import {useRouter} from "next/router"
 import {NextPage} from "next"
-import Link from "next/link"
 import Head from "next/head"
 
 import axios from "axios"
@@ -13,10 +12,11 @@ import CardContent from '@mui/material/CardContent'
 
 import Footer from "../../../layouts/footer"
 import Nav from "../../../layouts/nav"
-import {Doc, Folder} from "../../../lib/doc-reader"
+import {Doc} from "../../../lib/doc-reader"
 import Message from "../../../components/message"
 import Util from "../../../lib/util"
 import MemoForm from "../../../components/memo-form"
+import Breadcrumb from "../../../components/breadcrumb"
 
 export function getStaticPaths() {
   return {
@@ -47,23 +47,9 @@ const Page: NextPage = ({docId}: any) => {
   const router = useRouter()
   const [message, setMessage] = useState<string | null>(null)
   const [doc, setDoc] = useState<Doc>(initialDoc)
-  const [levels, setLevels] = useState<Folder[]>([])
   const [mode, setMode] = useState<string>('read')
   const titleRef = useRef(null)
   const bodyRef = useRef(null)
-
-  const readLevels = (folderId: string) => {
-    axios.get('/api/levels?id=' + folderId).then((res) => {
-      if (!res.data) { return }
-      setLevels(res.data)
-    }).catch(err => {
-      if (err.response.status == 403) {
-        router.replace('/login').catch(e => console.log(e))
-      } else {
-        setMessage(err.response.data)
-      }
-    })
-  }
 
   const readDoc = async () => {
     if (typeof docId !== 'string') {
@@ -73,7 +59,6 @@ const Page: NextPage = ({docId}: any) => {
     axios.get('/api/doc?id=' + docId).then((res) => {
       if (!res.data) { return }
       setDoc(res.data)
-      readLevels(res.data.folder_id)
     }).catch(err => {
       if (err.response.status == 403) {
         router.replace('/login').catch(e => console.log(e))
@@ -88,17 +73,6 @@ const Page: NextPage = ({docId}: any) => {
     readDoc()
       .catch(err => console.log(err))
   }, [docId])
-
-  const levelElems = levels.map((folder, index) => {
-    return (
-      <li key={index}>
-        <Link href={`/docs/${folder.id}`}>
-          <a>{ folder.folder_name }</a>
-        </Link>
-        { (levels.length - 1) != index ? <span>&gt;</span> : null }
-      </li>
-    )
-  })
 
   const handleClickEdit = (event: React.MouseEvent) => {
     event.preventDefault()
@@ -184,14 +158,7 @@ const Page: NextPage = ({docId}: any) => {
 
   const docBody = (
     <div>
-      <ul className="levels">
-        <li>
-          <Link href="/docs/00000"><a>Top</a></Link>
-          <span>&gt;</span>
-        </li>
-        { levelElems }
-      </ul>
-
+      <Breadcrumb folderId={doc.folder_id}/>
       { mode == 'read' ? textView : formView }
 
       {
