@@ -1,12 +1,12 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react"
 import {useRouter} from "next/router"
 import {NextPage} from "next"
 import Link from "next/link"
 import Head from "next/head"
 
-import axios, {AxiosResponse} from "axios";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import axios from "axios"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Card from '@mui/material/Card'
@@ -15,9 +15,9 @@ import CardContent from '@mui/material/CardContent'
 
 import Footer from "../../../layouts/footer"
 import Nav from "../../../layouts/nav"
-import {Doc, Folder} from "../../../lib/doc-reader";
+import {Doc, Folder} from "../../../lib/doc-reader"
 import Message from "../../../components/message"
-import Util from "../../../lib/util";
+import Util from "../../../lib/util"
 
 export function getStaticPaths() {
   return {
@@ -101,7 +101,7 @@ const Page: NextPage = ({docId}: any) => {
     )
   })
 
-  const handleClickEdit = (event: any) => {
+  const handleClickEdit = (event: React.MouseEvent) => {
     event.preventDefault()
     setMode('edit')
     if (!titleRef.current || !bodyRef.current) { return }
@@ -109,23 +109,26 @@ const Page: NextPage = ({docId}: any) => {
     (bodyRef.current as HTMLTextAreaElement).value = doc.body!;
   }
 
-  const handleClickBack = (event: any) => {
+  const handleClickBack = (event: React.MouseEvent) => {
     event.preventDefault()
     setMode('read')
   }
 
-  const handleSubmit = async (event: any) => {
-    event.preventDefault()
+  const handleSubmit = async (event: React.FormEvent|null) => {
+    if (event) { event.preventDefault() }
     if (!titleRef.current || !bodyRef.current) {
       setMessage('error')
       return
     }
 
+    const title = (titleRef.current as HTMLInputElement).value;
+    const body = (bodyRef.current as HTMLInputElement).value;
+
     try {
       const response = await axios.put('/api/doc', {
         id: docId,
-        title: (titleRef.current as HTMLInputElement).value,
-        body: (bodyRef.current as HTMLInputElement).value
+        title: title,
+        body: body
       })
 
       if (!response.data['result']) {
@@ -133,13 +136,16 @@ const Page: NextPage = ({docId}: any) => {
         return
       }
 
-      router.replace(`/docs/` + doc.folder_id).catch(e => console.log(e))
+      doc.title = title
+      doc.body = body
+      setDoc(doc)
+      setMode('read')
     } catch (e: any) {
       setMessage(e.toString())
     }
   }
 
-  const handleClickDelete = async (event: any) => {
+  const handleClickDelete = async (event: React.MouseEvent) => {
     event.preventDefault()
 
     if (!confirm('Are you sure?')) { return }
@@ -168,8 +174,26 @@ const Page: NextPage = ({docId}: any) => {
       </CardContent>
     </Card>
 
+  const handleTextKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key == 'Tab') {
+      event.preventDefault()
+      const element = event.target as HTMLTextAreaElement
+      const pos = element.selectionStart
+      const text = element.value
+      element.value = text.substr(0, pos) + '    ' + text.substr(pos)
+      element.setSelectionRange(pos + 4, pos + 4)
+    }
+  };
+
+  const handleFormKeyDown = (event: React.KeyboardEvent) => {
+    if (event.ctrlKey && event.key == 's') {
+      event.preventDefault()
+      handleSubmit(null).catch(e => console.log(e))
+    }
+  }
+
   const formView =
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} onKeyDown={handleFormKeyDown}>
       <Card className="mt-5">
         <CardContent className="grid grid-cols-1 gap-4">
           <TextField
@@ -191,6 +215,7 @@ const Page: NextPage = ({docId}: any) => {
             multiline
             rows={10}
             inputRef={bodyRef}
+            onKeyDown={handleTextKeyDown}
           />
           <Button type="submit" variant="contained" className="w-full">Edit</Button>
 

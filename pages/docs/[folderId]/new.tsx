@@ -66,7 +66,7 @@ const Page: NextPage = ({folderId}: any) => {
       return
     }
 
-    router.replace(`/docs/` + folderId).catch(e => console.log(e))
+    router.replace(`/docs/` + folderId + '/' + response.data['id']).catch(e => console.log(e))
   }
 
   const handleClickBack = (event: any) => {

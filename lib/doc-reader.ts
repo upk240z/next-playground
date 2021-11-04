@@ -94,7 +94,7 @@ export default class DocReader {
     return sprintf('%05d', id + 1)
   }
 
-  public async addDoc(folderId: string, title: string, body: string): Promise<void> {
+  public async addDoc(folderId: string, title: string, body: string): Promise<string> {
     const id = await this.createId()
     const res: WriteResult = await this.db.collection('memo').doc(id).set({
       id: id,
@@ -104,6 +104,7 @@ export default class DocReader {
       created_at: FieldValue.serverTimestamp(),
       updated_at: FieldValue.serverTimestamp(),
     })
+    return id
   }
 
   public async updateDoc(docId: string, title: string, body: string): Promise<void> {

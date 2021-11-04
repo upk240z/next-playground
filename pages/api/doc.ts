@@ -21,11 +21,12 @@ export default async function handler(
 
   if (req.method == 'POST') {
     try {
-      await reader.addDoc(
+      const id = await reader.addDoc(
         req.body['folder_id'],
         req.body['title'],
         req.body['body'],
       )
+      result['id'] = id
     } catch (e: any) {
       result['result'] = false
       result['message'] = e.toString()
