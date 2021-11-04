@@ -5,15 +5,12 @@ import Head from "next/head";
 import Link from "next/link";
 
 import axios from "axios";
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
 
 import Nav from "../../../layouts/nav";
 import Footer from "../../../layouts/footer";
 import Message from "../../../components/message";
 import {Folder} from "../../../lib/doc-reader";
+import MemoForm from "../../../components/memo-form"
 
 export function getStaticPaths() {
   return {
@@ -50,8 +47,8 @@ const Page: NextPage = ({folderId}: any) => {
     })
   }, [])
 
-  const handleSubmit = async (event: any) => {
-    event.preventDefault()
+  const handleSubmit = async (event: React.FormEvent|null) => {
+    if (event) { event.preventDefault() }
     if (!titleRef.current || !bodyRef.current) {
       return
     }
@@ -69,7 +66,7 @@ const Page: NextPage = ({folderId}: any) => {
     router.replace(`/docs/` + folderId + '/' + response.data['id']).catch(e => console.log(e))
   }
 
-  const handleClickBack = (event: any) => {
+  const handleClickBack = (event: React.MouseEvent) => {
     event.preventDefault()
     router.replace(`/docs/` + folderId).catch(e => console.log(e))
   }
@@ -106,31 +103,13 @@ const Page: NextPage = ({folderId}: any) => {
           { levelElems }
         </ul>
 
-        <form onSubmit={handleSubmit}>
-          <Card className="mt-5">
-            <CardContent className="grid grid-cols-1 gap-4">
-              <TextField
-                name="title"
-                label="Title"
-                type="text"
-                required={true}
-                className="w-full"
-                inputRef={titleRef}
-              />
-              <TextField
-                name="body"
-                label="Body"
-                type="text"
-                required={true}
-                className="w-full"
-                multiline
-                rows={10}
-                inputRef={bodyRef}
-              />
-              <Button type="submit" variant="contained" className="w-full">Add</Button>
-            </CardContent>
-          </Card>
-        </form>
+        <MemoForm
+          handleSubmit={handleSubmit}
+          titleRef={titleRef}
+          bodyRef={bodyRef}
+          buttonName="Add"
+        />
+
       </main>
 
       <Footer/>

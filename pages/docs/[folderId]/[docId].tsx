@@ -7,8 +7,6 @@ import Head from "next/head"
 import axios from "axios"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
@@ -18,6 +16,7 @@ import Nav from "../../../layouts/nav"
 import {Doc, Folder} from "../../../lib/doc-reader"
 import Message from "../../../components/message"
 import Util from "../../../lib/util"
+import MemoForm from "../../../components/memo-form"
 
 export function getStaticPaths() {
   return {
@@ -174,54 +173,14 @@ const Page: NextPage = ({docId}: any) => {
       </CardContent>
     </Card>
 
-  const handleTextKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key == 'Tab') {
-      event.preventDefault()
-      const element = event.target as HTMLTextAreaElement
-      const pos = element.selectionStart
-      const text = element.value
-      element.value = text.substr(0, pos) + '    ' + text.substr(pos)
-      element.setSelectionRange(pos + 4, pos + 4)
-    }
-  };
-
-  const handleFormKeyDown = (event: React.KeyboardEvent) => {
-    if (event.ctrlKey && event.key == 's') {
-      event.preventDefault()
-      handleSubmit(null).catch(e => console.log(e))
-    }
-  }
-
-  const formView =
-    <form onSubmit={handleSubmit} onKeyDown={handleFormKeyDown}>
-      <Card className="mt-5">
-        <CardContent className="grid grid-cols-1 gap-4">
-          <TextField
-            name="title"
-            label="Title"
-            type="text"
-            required={true}
-            defaultValue={doc.title}
-            className="w-full"
-            inputRef={titleRef}
-          />
-          <TextField
-            name="body"
-            label="Body"
-            type="text"
-            required={true}
-            defaultValue={doc.body}
-            className="w-full"
-            multiline
-            rows={10}
-            inputRef={bodyRef}
-            onKeyDown={handleTextKeyDown}
-          />
-          <Button type="submit" variant="contained" className="w-full">Edit</Button>
-
-        </CardContent>
-      </Card>
-    </form>
+  const formView = <MemoForm
+    title={doc.title}
+    body={doc.body}
+    handleSubmit={handleSubmit}
+    titleRef={titleRef}
+    bodyRef={bodyRef}
+    buttonName="Edit"
+  />
 
   const docBody = (
     <div>
