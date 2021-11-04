@@ -6,9 +6,7 @@ import Head from "next/head"
 import axios from "axios"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
+import {Card, CardHeader, CardContent, Fab} from '@mui/material/'
 
 import Footer from "../../../layouts/footer"
 import Nav from "../../../layouts/nav"
@@ -189,20 +187,20 @@ const Page: NextPage = ({docId}: any) => {
 
       <Footer/>
 
-      <div className="fixed-action-btn grid grid-cols-1 gap-2">
+      <div className="fab-buttons grid grid-cols-1 gap-2">
         {
           mode == 'read' ?
             <>
-              <a href="#" className="btn-floating bg-red-500" onClick={handleClickDelete}>
+              <Fab className="bg-red-500 text-white" onClick={handleClickDelete}>
                 <i className="material-icons left">delete</i>
-              </a>
-              <a href="#" className="btn-floating bg-blue-500" onClick={handleClickEdit}>
+              </Fab>
+              <Fab className="bg-green-500 text-white" onClick={handleClickEdit}>
                 <i className="material-icons left">edit</i>
-              </a>
+              </Fab>
             </> : <>
-              <a href="#" className="btn-floating bg-yellow-500" onClick={handleClickBack}>
+              <Fab className="bg-yellow-500 text-white" onClick={handleClickBack}>
                 <i className="material-icons left">reply</i>
-              </a>
+              </Fab>
             </>
         }
       </div>

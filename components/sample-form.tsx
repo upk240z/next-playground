@@ -15,7 +15,6 @@ const SampleForm = ({handle}: any) => {
         <TextField
           label="When is your event?"
           type="date"
-          className="w-full"
           defaultValue={now}
         />
 
@@ -39,7 +38,6 @@ const SampleForm = ({handle}: any) => {
           type="text"
           required={true}
           defaultValue="k01"
-          className="w-full"
         />
         <TextField
           name="value"
@@ -47,7 +45,6 @@ const SampleForm = ({handle}: any) => {
           type="text"
           required={true}
           defaultValue="v01"
-          className="w-full"
         />
       </div>
 

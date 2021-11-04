@@ -1,11 +1,15 @@
 import {NextPage} from "next";
 import {useRouter} from "next/router"
 import React, {useEffect, useState} from "react"
-import {Doc, Folder} from "../../lib/doc-reader"
-import axios from "axios"
 import Link from "next/link"
-import Util from "../../lib/util"
 import Head from "next/head"
+
+import axios from "axios"
+import {Fab} from '@mui/material/'
+import {Add} from '@mui/icons-material/'
+
+import {Doc, Folder} from "../../lib/doc-reader"
+import Util from "../../lib/util"
 import Nav from "../../layouts/nav"
 import Message from "../../components/message"
 import Footer from "../../layouts/footer"
@@ -146,15 +150,16 @@ const Page: NextPage = ({folderId}: any) => {
         <Message message={message} className="alert-danger"/>
 
         { loaded ? foldersElement : <Message message="Loading..." className="alert-success"/>  }
+
       </main>
 
       <Footer/>
 
-      <div className="fixed-action-btn grid grid-cols-1 gap-2">
+      <div className="fab-buttons">
         <Link href={`/docs/` + folderId + '/new'}>
-          <a className="btn-floating bg-green-500">
-            <i className="material-icons left">add</i>
-          </a>
+          <Fab color="primary" aria-label="add">
+            <Add />
+          </Fab>
         </Link>
       </div>
 

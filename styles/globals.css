@@ -98,6 +98,12 @@ ul.levels {
   display: none;
 }
 
+div.fab-buttons {
+  position: fixed;
+  right: 23px;
+  bottom: 23px;
+}
+
 div.fixed-action-btn {
   position: fixed;
   right: 23px;

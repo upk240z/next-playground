@@ -1,9 +1,6 @@
 import React from "react"
 
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
+import {Button, Card, CardContent, TextField} from '@mui/material/'
 
 const MemoForm = ({
   title,
@@ -41,7 +38,6 @@ const MemoForm = ({
             type="text"
             required={true}
             defaultValue={title}
-            className="w-full"
             inputRef={titleRef}
           />
           <TextField
@@ -50,9 +46,8 @@ const MemoForm = ({
             type="text"
             required={true}
             defaultValue={body}
-            className="w-full"
             multiline
-            rows={10}
+            minRows={10}
             inputRef={bodyRef}
             onKeyDown={handleTextKeyDown}
           />

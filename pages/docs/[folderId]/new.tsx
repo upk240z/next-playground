@@ -4,6 +4,7 @@ import {NextPage} from "next";
 import Head from "next/head";
 
 import axios from "axios";
+import {Fab} from '@mui/material/'
 
 import Nav from "../../../layouts/nav";
 import Footer from "../../../layouts/footer";
@@ -90,10 +91,10 @@ const Page: NextPage = ({folderId}: any) => {
 
       <Footer/>
 
-      <div className="fixed-action-btn grid grid-cols-1 gap-2">
-        <a href="#" className="btn-floating bg-yellow-500" onClick={handleClickBack}>
+      <div className="fab-buttons grid grid-cols-1 gap-2">
+        <Fab className="bg-yellow-500 text-white" onClick={handleClickBack}>
           <i className="material-icons left">reply</i>
-        </a>
+        </Fab>
       </div>
 
     </div>
