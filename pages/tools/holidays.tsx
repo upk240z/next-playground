@@ -3,10 +3,7 @@ import {NextPage} from "next"
 import Head from "next/head"
 
 import axios from "axios"
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import Chip from '@mui/material/Chip';
+import {Chip} from '@mui/material'
 import Snackbar from '@mui/material/Snackbar';
 
 import Nav from "../../layouts/nav"
@@ -36,10 +33,10 @@ const Page: NextPage = () => {
 
   const holidayElements = holidays.map((value: any, index: number) => {
     return (
-      <ListItem key={index}>
+      <li key={index} className="mt-3">
         <Chip label={value['date']} color="warning" className="mr-3" onClick={handleClick}/>
-        <ListItemText primary={value['name']}/>
-      </ListItem>
+        {value['name']}
+      </li>
     )
   })
 
@@ -52,10 +49,7 @@ const Page: NextPage = () => {
 
         {
           holidayElements.length > 0 ?
-            <List>
-              { holidayElements }
-            </List> :
-            <Message message="Loading..." className="alert-success"></Message>
+            <ul>{ holidayElements }</ul> : <Message message="Loading..." className="alert-success"></Message>
         }
 
       </main>
