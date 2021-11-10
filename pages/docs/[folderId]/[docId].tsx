@@ -191,15 +191,15 @@ const Page: NextPage = ({docId}: any) => {
         {
           mode == 'read' ?
             <>
-              <Fab className="bg-red-500 text-white" onClick={handleClickDelete}>
-                <i className="material-icons left">delete</i>
+              <Fab onClick={handleClickDelete} sx={{ bgcolor: 'error.main' }}>
+                <i className="material-icons left text-white">delete</i>
               </Fab>
-              <Fab className="bg-green-500 text-white" onClick={handleClickEdit}>
+              <Fab color="primary" onClick={handleClickEdit}>
                 <i className="material-icons left">edit</i>
               </Fab>
             </> : <>
-              <Fab className="bg-yellow-500 text-white" onClick={handleClickBack}>
-                <i className="material-icons left">reply</i>
+              <Fab onClick={handleClickBack} sx={{ bgcolor: 'warning.main' }}>
+                <i className="material-icons left text-white">reply</i>
               </Fab>
             </>
         }

@@ -92,7 +92,7 @@ const Page: NextPage = ({folderId}: any) => {
       <Footer/>
 
       <div className="fab-buttons grid grid-cols-1 gap-2">
-        <Fab className="bg-yellow-500 text-white" onClick={handleClickBack}>
+        <Fab color="secondary" onClick={handleClickBack}>
           <i className="material-icons left">reply</i>
         </Fab>
       </div>
