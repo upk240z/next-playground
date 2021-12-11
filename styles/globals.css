@@ -102,6 +102,7 @@ div.fab-buttons {
   position: fixed;
   right: 23px;
   bottom: 23px;
+  text-align: center;
 }
 
 div.fixed-action-btn {
