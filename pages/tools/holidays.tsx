@@ -3,7 +3,7 @@ import {NextPage} from "next"
 import Head from "next/head"
 
 import axios from "axios"
-import {Chip} from '@mui/material'
+import {Box, Grid, Paper, Chip, Typography} from '@mui/material'
 import Snackbar from '@mui/material/Snackbar';
 
 import Nav from "../../layouts/nav"
@@ -33,10 +33,20 @@ const Page: NextPage = () => {
 
   const holidayElements = holidays.map((value: any, index: number) => {
     return (
-      <li key={index} className="mt-3">
-        <Chip label={value['date']} color="warning" className="mr-3" onClick={handleClick}/>
-        {value['name']}
-      </li>
+      <Grid item key={index} xs={12} md={4}>
+        <Paper sx={{p: 2}}>
+          <Box sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center'
+          }}>
+            <Chip label={value['date']} variant="outlined" color="success" onClick={handleClick}/>
+            <Typography sx={{ml: 1}} component="div">
+              {value['name']}
+            </Typography>
+          </Box>
+        </Paper>
+      </Grid>
     )
   })
 
@@ -45,11 +55,11 @@ const Page: NextPage = () => {
       <Head><title>Holidays</title></Head>
       <Nav/>
       <main>
-        <h1>Holidays</h1>
+        <h1 className="mb-3">Holidays</h1>
 
         {
           holidayElements.length > 0 ?
-            <ul>{ holidayElements }</ul> : <Message message="Loading..." className="alert-success"></Message>
+            <Grid container spacing={2}>{ holidayElements }</Grid> : <Message message="Loading..." className="alert-success"></Message>
         }
 
       </main>
