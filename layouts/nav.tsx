@@ -16,11 +16,12 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
-import axios from "axios";
+import FirebaseAuth from "../lib/firebase-auth"
 
 const Nav = ({loggedIn}: any) => {
   const router = useRouter()
   const [drawerOpen, setDrawer] = useState<boolean>(false)
+  const fa = new FirebaseAuth()
 
   const toggleDrawer =
     (open: boolean) =>
@@ -36,13 +37,8 @@ const Nav = ({loggedIn}: any) => {
     }
 
   const handleLogout = () => {
-    axios.delete('/api/login').then((res) => {
-      if (!res.data.authenticated) {
-        router.replace('/login').catch(e => console.log(e))
-      } else {
-        console.log('logout failed.')
-      }
-    })
+    fa.signOut()
+    router.replace('/login').catch(e => console.log(e))
   }
 
   return (

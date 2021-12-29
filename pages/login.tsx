@@ -11,38 +11,30 @@ import CardContent from '@mui/material/CardContent'
 import Footer from "../layouts/footer"
 import Nav from "../layouts/nav"
 import Message from "../components/message"
+import FirebaseAuth from "../lib/firebase-auth";
 
 const Page: NextPage = () => {
   const router = useRouter()
   const [message, setMessage] = useState<string | null>(null)
   const [msgClass, setClass] = useState<string | null>('danger')
+  const fa = new FirebaseAuth()
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
-
     setMessage(null)
 
-    const res = await fetch('/api/login', {
-      body: JSON.stringify({
-        id: event.target.id.value,
-        password: event.target.password.value
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      method: 'POST'
+    const { email, password } = event.target.elements
+
+    fa.signIn(email.value, password.value).then(loggedIn => {
+      if (loggedIn) {
+        setClass('success')
+        setMessage('認証OK')
+        router.replace('/docs/00000').catch(e => console.log(e))
+      } else {
+        setClass('danger')
+        setMessage('Wrong mail or password')
+      }
     })
-
-    const result = await res.json()
-
-    if (result.authenticated) {
-      setClass('success')
-      setMessage('認証OK')
-      router.replace('/docs/00000').catch(e => console.log(e))
-    } else {
-      setClass('danger')
-      setMessage(result.message)
-    }
   }
 
   return (
@@ -58,8 +50,8 @@ const Page: NextPage = () => {
             <CardContent>
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 <TextField
-                  name="id"
-                  label="ID"
+                  name="email"
+                  label="Mail"
                   type="text"
                   required={true}
                   defaultValue=""

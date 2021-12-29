@@ -3,7 +3,6 @@ import {useRouter} from "next/router";
 import {NextPage} from "next";
 import Head from "next/head";
 
-import axios from "axios";
 import {Fab} from '@mui/material/'
 
 import Nav from "../../../layouts/nav";
@@ -11,6 +10,8 @@ import Footer from "../../../layouts/footer";
 import Message from "../../../components/message";
 import MemoForm from "../../../components/memo-form"
 import Breadcrumb from "../../../components/breadcrumb"
+import DocReader from "../../../lib/doc-reader"
+import FirebaseAuth from "../../../lib/firebase-auth"
 
 export function getStaticPaths() {
   return {
@@ -33,12 +34,13 @@ const Page: NextPage = ({folderId}: any) => {
   const titleRef = useRef(null)
   const bodyRef = useRef(null)
 
+  const fa = new FirebaseAuth()
+
   useEffect(() => {
-    axios.get('/api/login').then(response => {
-      if (!response.data.authenticated) {
-        router.replace('/login').catch(e => console.log(e))
-      }
-    })
+    if (!fa.loggedIn()) {
+      router.replace('/login').catch(e => console.log(e))
+      return
+    }
   }, [])
 
   const handleSubmit = async (event: React.FormEvent|null) => {
@@ -46,18 +48,14 @@ const Page: NextPage = ({folderId}: any) => {
     if (!titleRef.current || !bodyRef.current) {
       return
     }
-    const response = await axios.post('/api/doc', {
-      folder_id: folderId,
-      title: (titleRef.current as HTMLInputElement).value,
-      body: (bodyRef.current as HTMLInputElement).value
-    })
 
-    if (!response.data['result']) {
-      setMessage(response.data['message'])
-      return
+    try {
+      const docReader = new DocReader()
+      const createdId = await docReader.addDoc(folderId, (titleRef.current as HTMLInputElement).value, (bodyRef.current as HTMLInputElement).value)
+      router.replace(`/docs/` + folderId + '/' + createdId).catch(e => console.log(e))
+    } catch (err: any) {
+      setMessage(err.toString())
     }
-
-    router.replace(`/docs/` + folderId + '/' + response.data['id']).catch(e => console.log(e))
   }
 
   const handleClickBack = (event: React.MouseEvent) => {

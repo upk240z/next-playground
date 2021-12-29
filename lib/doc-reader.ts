@@ -1,7 +1,10 @@
-import admin from 'firebase-admin'
-import {ServiceAccount} from "firebase-admin/lib/credential";
-import {DocumentData, FieldValue, QueryDocumentSnapshot, WriteResult} from "@google-cloud/firestore";
 import {sprintf} from "sprintf";
+import {
+  getFirestore, collection, doc, setDoc, updateDoc,
+  getDoc, query, where, orderBy, limit, getDocs,
+  deleteDoc, Timestamp
+} from 'firebase/firestore'
+import { app } from './firebase'
 
 export type Folder = {
   id: string,
@@ -19,28 +22,17 @@ export type Doc = {
 }
 
 export default class DocReader {
-  private readonly db: any;
+  private readonly db: any
 
   constructor() {
-    if (admin.apps.length === 0) {
-      const cert: ServiceAccount = {
-        projectId: process.env.projectId,
-        privateKey: process.env.privateKey,
-        clientEmail: process.env.clientEmail,
-      };
-
-      admin.initializeApp({
-        credential: admin.credential.cert(cert),
-        databaseURL: 'https://webstudio-30e6a.firebaseio.com'
-      });
-    }
-
-    this.db = admin.firestore();
+    this.db = getFirestore(app)
   }
 
   public async getFolders(folderId: string = '00000'): Promise<Folder[]> {
-    const ref = this.db.collection('folder');
-    const snapShot = await ref.where('parent_id', '==', folderId).orderBy('folder_name').get();
+    const ref = collection(this.db, 'folder')
+    const snapShot = await getDocs(
+      query(ref, where('parent_id', '==', folderId), orderBy('folder_name'))
+    )
     return snapShot.docs.map((doc: any) => {
       const data = doc.data();
       return {
@@ -52,8 +44,10 @@ export default class DocReader {
   }
 
   public async getDocs(folderId: string = '00000'): Promise<Doc[]> {
-    const ref = this.db.collection('memo');
-    const snapShot = await ref.where('folder_id', '==', folderId).orderBy('title').get();
+    const ref = collection(this.db, 'memo');
+    const snapShot = await getDocs(
+      query(ref, where('folder_id', '==', folderId), orderBy('title'))
+    )
     return snapShot.docs.map((doc: any) => {
       const data = doc.data();
       return {
@@ -67,9 +61,9 @@ export default class DocReader {
   }
 
   public async getDoc(docId: string): Promise<Doc|false> {
-    const snapshot: QueryDocumentSnapshot = await this.db.collection('memo').doc(docId).get();
-    const data: DocumentData = snapshot.data();
-    if (snapshot.exists) {
+    const snapshot = await getDoc(doc(this.db, 'memo', docId))
+    if (snapshot.exists()) {
+      const data = snapshot.data()
       return {
         id: snapshot.id,
         folder_id: data.folder_id,
@@ -84,10 +78,13 @@ export default class DocReader {
   }
 
   private async createId(): Promise<string> {
-    const snapshot = await this.db.collection('memo').orderBy('id', 'desc').limit(1).get()
+    const ref = collection(this.db, 'memo')
+    const snapshot = await getDocs(
+      query(ref, orderBy('id', 'desc'), limit(1))
+    )
     let id = 0
     if (!snapshot.empty) {
-      snapshot.forEach((doc: DocumentData) => {
+      snapshot.forEach((doc: any) => {
         id = parseInt(doc.id)
       })
     }
@@ -96,33 +93,37 @@ export default class DocReader {
 
   public async addDoc(folderId: string, title: string, body: string): Promise<string> {
     const id = await this.createId()
-    const res: WriteResult = await this.db.collection('memo').doc(id).set({
+    const ref = collection(this.db, 'memo')
+
+    await setDoc(doc(ref, id), {
       id: id,
       folder_id: folderId,
       title: title,
       body: body,
-      created_at: FieldValue.serverTimestamp(),
-      updated_at: FieldValue.serverTimestamp(),
+      created_at: Timestamp.now(),
+      updated_at: Timestamp.now(),
     })
+
     return id
   }
 
   public async updateDoc(docId: string, title: string, body: string): Promise<void> {
-    const res: WriteResult = await this.db.collection('memo').doc(docId).update({
+    const ref = doc(this.db, 'memo', docId)
+    await updateDoc(ref, {
       title: title,
       body: body,
-      updated_at: FieldValue.serverTimestamp()
+      updated_at: Timestamp.now(),
     })
   }
 
   public async deleteDoc(docId: string): Promise<void> {
-    const res: WriteResult = await this.db.collection('memo').doc(docId).delete()
+    await deleteDoc(doc(this.db, 'memo', docId));
   }
 
   public async getFolder(folderId: string): Promise<Folder|false> {
-    const snapshot: QueryDocumentSnapshot = await this.db.collection('folder').doc(folderId).get();
-    const data: DocumentData = snapshot.data();
-    if (snapshot.exists) {
+    const snapshot = await getDoc(doc(this.db, 'folder', folderId))
+    if (snapshot.exists()) {
+      const data = snapshot.data();
       return {
         id: snapshot.id,
         parent_id: data.parent_id,

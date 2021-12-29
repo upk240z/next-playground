@@ -1,17 +1,21 @@
 import React, {useEffect, useState} from "react"
-import axios from "axios";
-import {Folder} from "../lib/doc-reader"
-import Link from "next/link";
+import DocReader, {Folder} from "../lib/doc-reader"
+import Link from "next/link"
 
 const Breadcrumb = ({folderId}: any) => {
   const [levels, setLevels] = useState<Folder[]>([])
 
+  const docReader = new DocReader()
+
+  const readLevels = async (fId: string) => {
+    if (!fId) {
+      return
+    }
+    setLevels(await docReader.levels(fId))
+  }
+
   useEffect(() => {
-    if (!folderId) { return }
-    axios.get('/api/levels?id=' + folderId).then((res) => {
-      if (!res.data) { return }
-      setLevels(res.data)
-    })
+    readLevels(folderId).catch(e => console.log(e))
   }, [])
 
   const levelElements = levels.map((folder, index) => {

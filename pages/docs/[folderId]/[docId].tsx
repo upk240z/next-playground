@@ -3,18 +3,18 @@ import {useRouter} from "next/router"
 import {NextPage} from "next"
 import Head from "next/head"
 
-import axios from "axios"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import {Card, CardHeader, CardContent, Fab} from '@mui/material/'
 
 import Footer from "../../../layouts/footer"
 import Nav from "../../../layouts/nav"
-import {Doc} from "../../../lib/doc-reader"
 import Message from "../../../components/message"
 import Util from "../../../lib/util"
 import MemoForm from "../../../components/memo-form"
 import Breadcrumb from "../../../components/breadcrumb"
+import DocReader, {Doc} from "../../../lib/doc-reader"
+import FirebaseAuth from '../../../lib/firebase-auth'
 
 export function getStaticPaths() {
   return {
@@ -49,27 +49,26 @@ const Page: NextPage = ({docId}: any) => {
   const titleRef = useRef(null)
   const bodyRef = useRef(null)
 
+  const docReader = new DocReader()
+  const fa = new FirebaseAuth()
+
   const readDoc = async () => {
     if (typeof docId !== 'string') {
       return
     }
-
-    axios.get('/api/doc?id=' + docId).then((res) => {
-      if (!res.data) { return }
-      setDoc(res.data)
-    }).catch(err => {
-      if (err.response.status == 403) {
-        router.replace('/login').catch(e => console.log(e))
-      } else {
-        setMessage(err.response.data)
-      }
-    })
+    const _doc = await docReader.getDoc(docId)
+    if (_doc) { setDoc(_doc) }
   }
 
   useEffect(() => {
+    if (!fa.loggedIn()) {
+      router.replace('/login').catch(e => console.log(e))
+      return
+    }
     setDoc(initialDoc)
-    readDoc()
-      .catch(err => console.log(err))
+    readDoc().catch(err => {
+      router.replace('/login').catch(e => console.log(e))
+    })
   }, [docId])
 
   const handleClickEdit = (event: React.MouseEvent) => {
@@ -96,17 +95,7 @@ const Page: NextPage = ({docId}: any) => {
     const body = (bodyRef.current as HTMLInputElement).value;
 
     try {
-      const response = await axios.put('/api/doc', {
-        id: docId,
-        title: title,
-        body: body
-      })
-
-      if (!response.data['result']) {
-        setMessage(response.data['message'])
-        return
-      }
-
+      await docReader.updateDoc(docId, title, body)
       doc.title = title
       doc.body = body
       setDoc(doc)
@@ -122,15 +111,7 @@ const Page: NextPage = ({docId}: any) => {
     if (!confirm('Are you sure?')) { return }
 
     try {
-      const response = await axios.delete('/api/doc', {
-        params: { id: docId }
-      })
-
-      if (!response.data['result']) {
-        setMessage(response.data['message'])
-        return
-      }
-
+      await docReader.deleteDoc(docId)
       router.replace(`/docs/` + doc.folder_id).catch(e => console.log(e))
     } catch (e: any) {
       setMessage(e.toString())

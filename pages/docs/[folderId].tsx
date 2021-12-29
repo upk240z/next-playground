@@ -4,15 +4,15 @@ import React, {useEffect, useState} from "react"
 import Link from "next/link"
 import Head from "next/head"
 
-import axios from "axios"
 import {Fab} from '@mui/material/'
 import {Add} from '@mui/icons-material/'
 
-import {Doc, Folder} from "../../lib/doc-reader"
+import DocReader, {Doc, Folder} from "../../lib/doc-reader"
 import Util from "../../lib/util"
 import Nav from "../../layouts/nav"
 import Message from "../../components/message"
 import Footer from "../../layouts/footer"
+import FirebaseAuth from '../../lib/firebase-auth'
 
 export function getStaticPaths() {
   return {
@@ -32,6 +32,8 @@ export function getStaticProps({params}: any) {
 
 const Page: NextPage = ({folderId}: any) => {
   const router = useRouter()
+  const docReader = new DocReader()
+  const fa = new FirebaseAuth()
 
   const [folders, setFolders] = useState<Folder[]>([])
   const [docs, setDocs] = useState<Doc[]>([])
@@ -39,38 +41,21 @@ const Page: NextPage = ({folderId}: any) => {
   const [message, setMessage] = useState<string|null>(null)
   const [loaded, setLoaded] = useState<boolean>(false)
 
-  const readLevels = async (pFolderId: string): Promise<void> => {
-    const res = await axios.get('/api/levels?id=' + pFolderId)
-    if (!res.data) { return }
-    setLevels(res.data)
-  }
-
-  const readFolder = async (pFolderId: string): Promise<void> => {
-    const res = await axios.get('/api/folders?id=' + pFolderId)
-    setFolders(res.data)
-  }
-
-  const readDoc = async (pFolderId: string): Promise<void> => {
-    const res = await axios.get('/api/docs?id=' + pFolderId)
-    setDocs(res.data)
-  }
-
   const readAll = async () => {
-    if (typeof folderId !== 'string') { return }
-    await readLevels(folderId)
-    await readFolder(folderId)
-    await readDoc(folderId)
+    if (folderId == undefined) { return }
+    setLevels(await docReader.levels(folderId))
+    setFolders(await docReader.getFolders(folderId))
+    setDocs(await docReader.getDocs(folderId))
     setLoaded(true)
   }
 
   useEffect(() => {
-    setLoaded(false)
+    if (!fa.loggedIn()) {
+      router.replace('/login').catch(e => console.log(e))
+      return
+    }
     readAll().catch(err => {
-      if (err.response.status == 403) {
-        router.replace('/login').catch(e => console.log(e))
-      } else {
-        setMessage(err.response.data)
-      }
+      router.replace('/login').catch(e => console.log(e))
     })
   }, [folderId])
 
