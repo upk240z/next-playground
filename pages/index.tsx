@@ -26,7 +26,6 @@ const Home: NextPage = () => {
             <li><Link href="/form-function"><a>Form(Function component)</a></Link></li>
             <li><Link href="/form-class"><a>Form(Class component)</a></Link></li>
             <li><Link href="/posts"><a>Posts</a></Link></li>
-            <li><Link href="/auth"><a>Auth</a></Link></li>
           </ul>
 
           <h2 className="mt-3 pb-2 border-b border-black font-bold">Tools</h2>
