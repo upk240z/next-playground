@@ -19,7 +19,7 @@ export default class FirebaseAuth {
         const authResult = {
           time: Util.now()
         }
-        localStorage.setItem(FirebaseAuth.STORAGE_ITEM, JSON.stringify(authResult))
+        sessionStorage.setItem(FirebaseAuth.STORAGE_ITEM, JSON.stringify(authResult))
       }
       return result
     } catch (e) {
@@ -30,16 +30,16 @@ export default class FirebaseAuth {
 
   public signOut(): void {
     signOut(this.auth).catch(e => console.log(e))
-    localStorage.removeItem(FirebaseAuth.STORAGE_ITEM)
+    sessionStorage.removeItem(FirebaseAuth.STORAGE_ITEM)
   }
 
   public loggedIn(): boolean {
-    const json = localStorage.getItem(FirebaseAuth.STORAGE_ITEM)
+    const json = sessionStorage.getItem(FirebaseAuth.STORAGE_ITEM)
     if (!json) { return false }
     const decoded = JSON.parse(json)
     if ((decoded['time'] + FirebaseAuth.EXPIRE_TIME) >= Util.now()) {
       decoded['time'] = Util.now()
-      localStorage.setItem(FirebaseAuth.STORAGE_ITEM, JSON.stringify(decoded))
+      sessionStorage.setItem(FirebaseAuth.STORAGE_ITEM, JSON.stringify(decoded))
       return true
     } else {
       this.signOut()
