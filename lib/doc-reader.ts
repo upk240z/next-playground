@@ -1,9 +1,5 @@
 import {sprintf} from "sprintf";
-import {
-  getFirestore, collection, doc, setDoc, updateDoc,
-  getDoc, query, where, orderBy, limit, getDocs,
-  deleteDoc, Timestamp
-} from 'firebase/firestore'
+import * as Firestore from 'firebase/firestore'
 import { app } from './firebase'
 
 export type Folder = {
@@ -25,13 +21,13 @@ export default class DocReader {
   private readonly db: any
 
   constructor() {
-    this.db = getFirestore(app)
+    this.db = Firestore.getFirestore(app)
   }
 
   public async getFolders(folderId: string = '00000'): Promise<Folder[]> {
-    const ref = collection(this.db, 'folder')
-    const snapShot = await getDocs(
-      query(ref, where('parent_id', '==', folderId), orderBy('folder_name'))
+    const ref = Firestore.collection(this.db, 'folder')
+    const snapShot = await Firestore.getDocs(
+      Firestore.query(ref, Firestore.where('parent_id', '==', folderId), Firestore.orderBy('folder_name'))
     )
     return snapShot.docs.map((doc: any) => {
       const data = doc.data();
@@ -44,9 +40,9 @@ export default class DocReader {
   }
 
   public async getDocs(folderId: string = '00000'): Promise<Doc[]> {
-    const ref = collection(this.db, 'memo');
-    const snapShot = await getDocs(
-      query(ref, where('folder_id', '==', folderId), orderBy('title'))
+    const ref = Firestore.collection(this.db, 'memo');
+    const snapShot = await Firestore.getDocs(
+      Firestore.query(ref, Firestore.where('folder_id', '==', folderId), Firestore.orderBy('title'))
     )
     return snapShot.docs.map((doc: any) => {
       const data = doc.data();
@@ -61,7 +57,7 @@ export default class DocReader {
   }
 
   public async getDoc(docId: string): Promise<Doc|false> {
-    const snapshot = await getDoc(doc(this.db, 'memo', docId))
+    const snapshot = await Firestore.getDoc(Firestore.doc(this.db, 'memo', docId))
     if (snapshot.exists()) {
       const data = snapshot.data()
       return {
@@ -78,9 +74,9 @@ export default class DocReader {
   }
 
   private async createId(collectionName: string = 'memo'): Promise<string> {
-    const ref = collection(this.db, collectionName)
-    const snapshot = await getDocs(
-      query(ref, orderBy('id', 'desc'), limit(1))
+    const ref = Firestore.collection(this.db, collectionName)
+    const snapshot = await Firestore.getDocs(
+      Firestore.query(ref, Firestore.orderBy('id', 'desc'), Firestore.limit(1))
     )
     let id = 0
     if (!snapshot.empty) {
@@ -93,38 +89,38 @@ export default class DocReader {
 
   public async addDoc(folderId: string, title: string, body: string): Promise<string> {
     const id = await this.createId()
-    const ref = collection(this.db, 'memo')
+    const ref = Firestore.collection(this.db, 'memo')
 
-    await setDoc(doc(ref, id), {
+    await Firestore.setDoc(Firestore.doc(ref, id), {
       id: id,
       folder_id: folderId,
       title: title,
       body: body,
-      created_at: Timestamp.now(),
-      updated_at: Timestamp.now(),
+      created_at: Firestore.Timestamp.now(),
+      updated_at: Firestore.Timestamp.now(),
     })
 
     return id
   }
 
   public async updateDoc(docId: string, title: string, body: string): Promise<void> {
-    const ref = doc(this.db, 'memo', docId)
-    await updateDoc(ref, {
+    const ref = Firestore.doc(this.db, 'memo', docId)
+    await Firestore.updateDoc(ref, {
       title: title,
       body: body,
-      updated_at: Timestamp.now(),
+      updated_at: Firestore.Timestamp.now(),
     })
   }
 
   public async deleteDoc(docId: string): Promise<void> {
-    await deleteDoc(doc(this.db, 'memo', docId));
+    await Firestore.deleteDoc(Firestore.doc(this.db, 'memo', docId));
   }
 
   public async addFolder(parent_id: string, folderName: string): Promise<string> {
     const id = await this.createId('folder')
-    const ref = collection(this.db, 'folder')
+    const ref = Firestore.collection(this.db, 'folder')
 
-    await setDoc(doc(ref, id), {
+    await Firestore.setDoc(Firestore.doc(ref, id), {
       id: id,
       parent_id: parent_id,
       folder_name: folderName,
@@ -134,7 +130,7 @@ export default class DocReader {
   }
 
   public async getFolder(folderId: string): Promise<Folder|false> {
-    const snapshot = await getDoc(doc(this.db, 'folder', folderId))
+    const snapshot = await Firestore.getDoc(Firestore.doc(this.db, 'folder', folderId))
     if (snapshot.exists()) {
       const data = snapshot.data();
       return {
