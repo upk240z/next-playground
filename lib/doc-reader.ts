@@ -129,6 +129,15 @@ export default class DocReader {
     return id
   }
 
+  public async deleteFolder(folderId: string): Promise<void> {
+    const docs = await this.getDocs(folderId)
+    const folders = await this.getFolders(folderId)
+    if (docs.length > 0 || folders.length > 0) {
+      throw new Error('cannot delete folder')
+    }
+    await Firestore.deleteDoc(Firestore.doc(this.db, 'folder', folderId))
+  }
+
   public async getFolder(folderId: string): Promise<Folder|false> {
     const snapshot = await Firestore.getDoc(Firestore.doc(this.db, 'folder', folderId))
     if (snapshot.exists()) {

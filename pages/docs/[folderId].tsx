@@ -8,7 +8,10 @@ import {
   Fab, TextField, Button,
   Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material/'
-import {Add as AddIcon} from '@mui/icons-material/'
+import {
+  Add as AddIcon,
+  Remove as RemoveIcon
+} from '@mui/icons-material/'
 
 import DocReader, {Doc, Folder} from "../../lib/doc-reader"
 import Util from "../../lib/util"
@@ -64,7 +67,8 @@ const Page: NextPage = ({folderId}: any) => {
     })
   }, [folderId])
 
-  const handleClickAddFolder = () => {
+  const handleClickAddFolder = (event: React.MouseEvent) => {
+    event.preventDefault()
     setDialogOpen(true)
   }
 
@@ -88,6 +92,17 @@ const Page: NextPage = ({folderId}: any) => {
       router.replace('/docs/' + newId).catch(e => console.log(e))
       setDialogOpen(false)
     })
+  }
+
+  const handleClickRemoveFolder = () => {
+    if (!confirm('are you sure?')) { return }
+    try {
+      docReader.deleteFolder(folderId).then(_ => {
+        router.replace('/docs/00000').catch(e => console.log(e))
+      })
+    } catch (e: any) {
+      setMessage(e.toString())
+    }
   }
 
   const levelElems = levels.map((folder, index) => {
@@ -174,12 +189,15 @@ const Page: NextPage = ({folderId}: any) => {
 
       <Footer/>
 
-      <div className="fab-buttons">
+      <div className="fab-buttons grid grid-cols-1 gap-2">
         <Link href={`/docs/` + folderId + '/new'}>
           <Fab color="primary" aria-label="add">
             <AddIcon />
           </Fab>
         </Link>
+        <Fab color="secondary" aria-label="remove" onClick={handleClickRemoveFolder}>
+          <RemoveIcon />
+        </Fab>
       </div>
 
       <Dialog
