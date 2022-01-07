@@ -1,11 +1,14 @@
 import {NextPage} from "next";
 import {useRouter} from "next/router"
-import React, {useEffect, useState} from "react"
+import React, {useEffect, useRef, useState} from "react"
 import Link from "next/link"
 import Head from "next/head"
 
-import {Fab} from '@mui/material/'
-import {Add} from '@mui/icons-material/'
+import {
+  Fab, TextField, Button,
+  Dialog, DialogTitle, DialogContent, DialogActions
+} from '@mui/material/'
+import {Add as AddIcon} from '@mui/icons-material/'
 
 import DocReader, {Doc, Folder} from "../../lib/doc-reader"
 import Util from "../../lib/util"
@@ -40,6 +43,8 @@ const Page: NextPage = ({folderId}: any) => {
   const [levels, setLevels] = useState<Folder[]>([])
   const [message, setMessage] = useState<string|null>(null)
   const [loaded, setLoaded] = useState<boolean>(false)
+  const [dialogOpened, setDialogOpen] = useState<boolean>(false)
+  const folderNameRef = useRef(null)
 
   const readAll = async () => {
     if (folderId == undefined) { return }
@@ -58,6 +63,32 @@ const Page: NextPage = ({folderId}: any) => {
       router.replace('/login').catch(e => console.log(e))
     })
   }, [folderId])
+
+  const handleClickAddFolder = () => {
+    setDialogOpen(true)
+  }
+
+  const handleDialogClose = () => {
+    setDialogOpen(false)
+  }
+
+  const handleClickSaveFolder = () => {
+    setMessage(null)
+    if (!folderNameRef.current) {
+      return
+    }
+
+    const folderName = (folderNameRef.current as HTMLInputElement).value
+    if (folderName.length == 0) {
+      setDialogOpen(false)
+      setMessage('input folder name')
+      return
+    }
+    docReader.addFolder(folderId, folderName).then(newId => {
+      router.replace('/docs/' + newId).catch(e => console.log(e))
+      setDialogOpen(false)
+    })
+  }
 
   const levelElems = levels.map((folder, index) => {
     if ((levels.length - 1) == index) {
@@ -115,6 +146,9 @@ const Page: NextPage = ({folderId}: any) => {
           <span>&gt;</span>
         </li>
         { levelElems }
+        <li>
+          <span onClick={handleClickAddFolder}>[+]</span>
+        </li>
       </ul>
 
       <ul className="list-group mt-5">
@@ -143,10 +177,32 @@ const Page: NextPage = ({folderId}: any) => {
       <div className="fab-buttons">
         <Link href={`/docs/` + folderId + '/new'}>
           <Fab color="primary" aria-label="add">
-            <Add />
+            <AddIcon />
           </Fab>
         </Link>
       </div>
+
+      <Dialog
+        open={dialogOpened}
+        onClose={handleDialogClose}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Folder</DialogTitle>
+        <DialogContent>
+          <TextField
+            inputRef={folderNameRef}
+            label="Folder name"
+            type="text"
+            variant="standard"
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Close</Button>
+          <Button onClick={handleClickSaveFolder}>Save</Button>
+        </DialogActions>
+      </Dialog>
 
     </div>
   )

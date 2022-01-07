@@ -77,8 +77,8 @@ export default class DocReader {
     }
   }
 
-  private async createId(): Promise<string> {
-    const ref = collection(this.db, 'memo')
+  private async createId(collectionName: string = 'memo'): Promise<string> {
+    const ref = collection(this.db, collectionName)
     const snapshot = await getDocs(
       query(ref, orderBy('id', 'desc'), limit(1))
     )
@@ -118,6 +118,19 @@ export default class DocReader {
 
   public async deleteDoc(docId: string): Promise<void> {
     await deleteDoc(doc(this.db, 'memo', docId));
+  }
+
+  public async addFolder(parent_id: string, folderName: string): Promise<string> {
+    const id = await this.createId('folder')
+    const ref = collection(this.db, 'folder')
+
+    await setDoc(doc(ref, id), {
+      id: id,
+      parent_id: parent_id,
+      folder_name: folderName,
+    })
+
+    return id
   }
 
   public async getFolder(folderId: string): Promise<Folder|false> {
