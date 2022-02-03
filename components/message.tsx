@@ -1,7 +1,7 @@
 import React from "react";
 
 const Message = ({message, className}: { message: string|null, className: string }) => {
-  if (message !== null) {
+  if (message) {
     return (
       <div className={className + ' mt-3'}>
         <svg className="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">

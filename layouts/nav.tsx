@@ -122,6 +122,10 @@ const Nav = ({loggedIn}: any) => {
               <ListItemIcon><i className="material-icons">build</i></ListItemIcon>
               <Link href="/tools/holidays">Holidays</Link>
             </ListItem>
+            <ListItem>
+              <ListItemIcon><i className="material-icons">build</i></ListItemIcon>
+              <Link href="/tools/qrcode">QRCode</Link>
+            </ListItem>
           </List>
         </Box>
       </Drawer>

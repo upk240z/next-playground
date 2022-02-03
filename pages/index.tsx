@@ -35,6 +35,7 @@ const Home: NextPage = () => {
             <li><Link href="/tools/datetime"><a>Datetime</a></Link></li>
             <li><Link href="/tools/regex"><a>RegEx</a></Link></li>
             <li><Link href="/tools/holidays"><a>Holidays</a></Link></li>
+            <li><Link href="/tools/qrcode"><a>QRCode</a></Link></li>
           </ul>
         </main>
 
