@@ -1,6 +1,6 @@
 import {BrowserQRCodeReader} from "@zxing/browser"
 
-export const detectQrcode = (image: HTMLImageElement): Promise<any> => {
+export const decodeQrcode = (image: HTMLImageElement): Promise<any> => {
   return new Promise(async (resolve, reject) => {
     if (!image) { reject('no image') }
 
@@ -12,5 +12,22 @@ export const detectQrcode = (image: HTMLImageElement): Promise<any> => {
       console.log(err)
       reject('decode error')
     }
+  })
+}
+
+export const initCamera = (movie: HTMLVideoElement) => {
+  if (!movie || movie.srcObject) { return }
+
+  const facing: 'environment' | 'user' = 'environment'
+
+  navigator.mediaDevices.getUserMedia({
+    audio: false,
+    video: {
+      facingMode: {
+        exact: facing
+      }
+    }
+  }).then(stream => {
+    movie.srcObject = stream
   })
 }
