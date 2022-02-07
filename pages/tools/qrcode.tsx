@@ -1,6 +1,6 @@
-import React, {useRef, useState} from "react";
+import React, {useRef, useState} from "react"
 import {NextPage} from "next"
-import Head from "next/head";
+import Head from "next/head"
 
 import {
   Paper, Typography, TextField, Box, Grid, Button, Switch,
@@ -9,12 +9,10 @@ import {
 import {
   Camera as CameraIcon
 } from '@mui/icons-material'
-import {green} from "@mui/material/colors"
 
-import Nav from "../../layouts/nav";
-import Message from "../../components/message";
-import {decodeQrcode, initCamera} from "../../lib/functions";
-import {maxWidth} from "@mui/system";
+import Nav from "../../layouts/nav"
+import Message from "../../components/message"
+import {decodeQrcode, initCamera} from "../../lib/functions"
 
 const Page: NextPage = () => {
   const [message, setMessage] = useState<string>('')
@@ -43,6 +41,8 @@ const Page: NextPage = () => {
     decodeQrcode(imgElement).then(result => {
       setMessage('')
       setResultJson(JSON.stringify(result, null, 2))
+      setMsgClass('alert-success')
+      setMessage('Success')
     }).catch(e => {
       setMsgClass('alert-danger')
       setMessage(e)
@@ -123,19 +123,21 @@ const Page: NextPage = () => {
               fullWidth
             />
           </Box>
-          <Box className={activeCamera ? '' : 'hidden'}>
-            <Typography variant="h6" sx={{ mb: 2 }} color="secondary">
-              <Button
-                variant="contained"
-                sx={{ mr: 2 }}
-                onClick={handleShotCamera}
-                color="success"
-              >
-                <CameraIcon/>
-              </Button>
-              Camera
-            </Typography>
-            <video ref={refMovie} autoPlay playsInline style={{maxWidth: '500px'}}></video>
+          <Box className={activeCamera ? '' : 'hidden'} sx={{ display: 'flex', justifyContent: 'center'}}>
+            <Box sx={{ maxWidth: 'md' }}>
+              <Typography variant="h6" sx={{ mb: 2, textAlign: 'center' }} color="secondary">
+                <Button
+                  variant="contained"
+                  sx={{ mr: 2 }}
+                  onClick={handleShotCamera}
+                  color="success"
+                >
+                  <CameraIcon/>
+                </Button>
+                Camera
+              </Typography>
+              <video ref={refMovie} autoPlay playsInline style={{ width: '100%' }}></video>
+            </Box>
           </Box>
         </Paper>
 

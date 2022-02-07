@@ -1,12 +1,30 @@
+import React from 'react'
 import type {NextPage} from 'next'
 import Head from "next/head"
 import Link from "next/link"
+
+import * as QRCode from 'qrcode'
+import {Box} from '@mui/material'
 
 import styles from '../styles/Home.module.css'
 import Footer from "../layouts/footer"
 import Nav from "../layouts/nav"
 
+const drawQr = (canvas: HTMLCanvasElement) => {
+  QRCode.toCanvas(canvas, window.location.href, err => {
+    console.log(err)
+  })
+}
+
 const Home: NextPage = () => {
+  const refCanvas = React.useRef(null)
+
+  React.useEffect(() => {
+    if (refCanvas.current) {
+      drawQr(refCanvas.current as HTMLCanvasElement)
+    }
+  }, [])
+
   return (
     <>
       <Head>
@@ -17,9 +35,16 @@ const Home: NextPage = () => {
         <Nav/>
 
         <main>
-          <h1 className={styles.title}>
-            <a href="https://nextjs.org">Next.js</a> Samples
-          </h1>
+          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+            <Box>
+              <h1 className={styles.title}>
+                <a href="https://nextjs.org">Next.js</a>
+              </h1>
+            </Box>
+            <Box sx={{ ml: 1 }}>
+              <canvas ref={refCanvas}></canvas>
+            </Box>
+          </Box>
 
           <h2 className="pb-2 border-b border-black font-bold">Examples</h2>
           <ul className="list-group mt-5">
