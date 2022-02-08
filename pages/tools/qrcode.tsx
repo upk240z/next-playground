@@ -4,12 +4,13 @@ import Head from "next/head"
 
 import {
   Paper, Typography, TextField, Box, Grid, Button, Switch,
-  FormGroup, FormControlLabel
+  FormGroup, FormControlLabel, Chip,
 } from '@mui/material'
 import {
   Camera as CameraIcon
 } from '@mui/icons-material'
 import * as QRCode from 'qrcode'
+import {BrowserQRCodeSvgWriter} from '@zxing/browser'
 
 import Nav from "../../layouts/nav"
 import Message from "../../components/message"
@@ -29,6 +30,7 @@ const Page: NextPage = () => {
   const refMovie = useRef(null)
   const refPicture = useRef(null)
   const refQrCanvas = useRef(null)
+  const refSvgBox = useRef(null)
 
   const handleClick = (evt: any) => {
     if (!refFile.current) { return }
@@ -74,8 +76,6 @@ const Page: NextPage = () => {
     setActiveCamera(checkBox.checked)
     if (checkBox.checked) {
       initCamera(refMovie.current! as HTMLVideoElement)
-    } else {
-      setActiveCamera(false)
     }
     setResultJson('')
     setSelectedImg(false)
@@ -106,8 +106,10 @@ const Page: NextPage = () => {
       return
     }
 
+    const canvas = refQrCanvas.current as HTMLCanvasElement
+
     QRCode.toCanvas(
-      refQrCanvas.current as HTMLCanvasElement,
+      canvas,
       textArea.value,
       (err) => {
         if (err) {
@@ -122,6 +124,14 @@ const Page: NextPage = () => {
         setDrawQr(true)
       }
     )
+
+    if (!refSvgBox.current) { return }
+
+    const writer = new BrowserQRCodeSvgWriter()
+    const svg = writer.write(textArea.value, canvas.width, canvas.height)
+    const box = refSvgBox.current as HTMLElement
+    box.innerHTML = ''
+    box.appendChild(svg)
   }
 
   return (
@@ -205,8 +215,22 @@ const Page: NextPage = () => {
             onChange={handleChangeQrText}
           />
         </Box>
-        <Box className={drawQr ? '' : 'hidden'}>
-          <canvas ref={refQrCanvas}></canvas>
+        <Box className={drawQr ? '' : 'hidden'} sx={{ mt: 2, display: 'flex', justifyContent: 'space-around' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+            <Box sx={{ textAlign: 'center' }}>
+              <Chip label="PNG" color="primary" variant="outlined"/>
+            </Box>
+            <Box>
+              <canvas ref={refQrCanvas}></canvas>
+            </Box>
+          </Box>
+          <Box sx={{ ml: 2, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+            <Box sx={{ textAlign: 'center' }}>
+              <Chip label="SVG" color="success" variant="outlined"/>
+            </Box>
+            <Box ref={refSvgBox}>
+            </Box>
+          </Box>
         </Box>
       </Paper>
 
