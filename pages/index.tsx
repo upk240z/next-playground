@@ -12,7 +12,7 @@ import Nav from "../layouts/nav"
 
 const drawQr = (canvas: HTMLCanvasElement) => {
   QRCode.toCanvas(canvas, window.location.href, err => {
-    console.log(err)
+    if (err) { console.log(err) }
   })
 }
 

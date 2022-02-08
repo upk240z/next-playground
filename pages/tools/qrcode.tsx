@@ -9,6 +9,7 @@ import {
 import {
   Camera as CameraIcon
 } from '@mui/icons-material'
+import * as QRCode from 'qrcode'
 
 import Nav from "../../layouts/nav"
 import Message from "../../components/message"
@@ -20,11 +21,14 @@ const Page: NextPage = () => {
   const [resultJson, setResultJson] = useState<string>('')
   const [selectedImg, setSelectedImg] = useState<boolean>(false)
   const [activeCamera, setActiveCamera] = useState<boolean>(false)
+  const [drawQr, setDrawQr] = useState<boolean>(false)
+
   const refInput = useRef(null)
   const refFile = useRef(null)
   const refImage = useRef(null)
   const refMovie = useRef(null)
   const refPicture = useRef(null)
+  const refQrCanvas = useRef(null)
 
   const handleClick = (evt: any) => {
     if (!refFile.current) { return }
@@ -61,6 +65,7 @@ const Page: NextPage = () => {
       const inputElement = refInput.current as HTMLInputElement
       inputElement.value = file.name
     }
+
     selectQrImage(window.URL.createObjectURL(file))
   }
 
@@ -91,9 +96,37 @@ const Page: NextPage = () => {
     selectQrImage(picture.toDataURL('image/jpeg'))
   }
 
+  const handleChangeQrText = (evt: any) => {
+    const textArea = evt.target as HTMLTextAreaElement
+    if (
+      textArea.value.length == 0 ||
+      !refQrCanvas.current
+    ) {
+      setDrawQr(false)
+      return
+    }
+
+    QRCode.toCanvas(
+      refQrCanvas.current as HTMLCanvasElement,
+      textArea.value,
+      (err) => {
+        if (err) {
+          console.log(err)
+          setMsgClass('alert-danger')
+          setMessage('Error on generating QRCode')
+          return
+        }
+
+        setMsgClass('alert-success')
+        setMessage('Generated QRCode')
+        setDrawQr(true)
+      }
+    )
+  }
+
   return (
     <div className="container">
-      <Head><title>QRCode Reader</title></Head>
+      <Head><title>QRCode</title></Head>
       <Nav/>
       <main>
         <h1>QRCode Reader</h1>
@@ -103,7 +136,7 @@ const Page: NextPage = () => {
           sx={{mt: 3, p: 2}}
         >
           <Typography component="h2" variant="h6" color="secondary">
-            Select image
+            Reader
           </Typography>
           <Box sx={{ mb: 2 }}>
             <FormGroup>
@@ -162,7 +195,22 @@ const Page: NextPage = () => {
         </Paper>
       </main>
 
-      <Box className="hidden">
+      <Paper sx={{ mt: 3, p: 2 }}>
+        <Typography component="h2" variant="h6" color="secondary">
+          Generator
+        </Typography>
+        <Box sx={{ mt: 2 }}>
+          <TextField
+            label="Text" variant="outlined" fullWidth multiline minRows={2}
+            onChange={handleChangeQrText}
+          />
+        </Box>
+        <Box className={drawQr ? '' : 'hidden'}>
+          <canvas ref={refQrCanvas}></canvas>
+        </Box>
+      </Paper>
+
+      <Box className="hidden" sx={{ mt: 1, border: 1 }}>
         <input ref={refFile} type="file" onChange={handleChangeImage}/>
         <canvas ref={refPicture}></canvas>
       </Box>
