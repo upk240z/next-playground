@@ -166,7 +166,7 @@ const Page: NextPage = () => {
               fullWidth
             />
           </Box>
-          <Box className={activeCamera ? '' : 'hidden'} sx={{ display: 'flex', justifyContent: 'center'}}>
+          <Box sx={{ display: activeCamera ? 'flex' : 'none', justifyContent: 'center'}}>
             <Box sx={{ maxWidth: 'md' }}>
               <Typography variant="h6" sx={{ mb: 2, textAlign: 'center' }} color="secondary">
                 <Button
@@ -215,7 +215,7 @@ const Page: NextPage = () => {
             onChange={handleChangeQrText}
           />
         </Box>
-        <Box className={drawQr ? '' : 'hidden'} sx={{ mt: 2, display: 'flex', justifyContent: 'space-around' }}>
+        <Box sx={{ mt: 2, display: drawQr ? 'flex' : 'none', justifyContent: 'space-around' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
             <Box sx={{ textAlign: 'center' }}>
               <Chip label="PNG" color="primary" variant="outlined"/>
