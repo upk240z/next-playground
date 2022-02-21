@@ -50,8 +50,8 @@ export default class DocReader {
         id: doc.id,
         folder_id: data.folder_id,
         title: data.title,
-        created_at: data.created_at._seconds,
-        updated_at: data.updated_at._seconds,
+        created_at: data.created_at.seconds,
+        updated_at: data.updated_at.seconds,
       };
     });
   }
